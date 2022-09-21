@@ -1,10 +1,13 @@
-import * as React from 'react';
+import {useState} from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import {blue} from '@mui/material/colors';
 
 import {Avatar, Box, Button, Container, Link, TextField, Typography} from '@mui/material';
 
+
 function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
   return (
     <Container className='form-card' maxWidth='xs'>
         <Avatar className='avatars' sx={{ bgcolor: blue[700] }}>
@@ -16,9 +19,9 @@ function Login() {
         </Typography>
         <Box height={24}/>
         <Box component="form">
-        <TextField size="small" id="email" label="Email Address" name="email" required fullWidth />
+        <TextField size="small" id="email" label="Email Address" name="email" onChange = {event => setEmail(event.target.value)} required fullWidth />
         <Box height={24}/>
-        <TextField size="small" id="password" name="password" label="Password" type="password" required fullWidth />
+        <TextField size="small" id="password" name="password" label="Password" type="password" onChange={event => setPassword(event.target.value)} required fullWidth />
         <Box height={24}/>
         <Button type="submit" variant="contained" fullWidth>
             Sign In
