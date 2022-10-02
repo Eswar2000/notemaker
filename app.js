@@ -32,6 +32,7 @@ app.post('/temp', (req, res) => {
     console.log("NodeJS and ReactJS are connected successfully");
 });
 
+// Route for registering new user
 app.post('/register', (req, res) => {
     User.findOne({email: req.body.email}).then(async (user) => {
         try {
@@ -50,13 +51,48 @@ app.post('/register', (req, res) => {
                 return;
             }
         } catch(err){
-            res.status = 500;
+            res.statusCode = 500;
             res.json({
                 "status": "Internal Server Error",
             });
         }
     });
 
+});
+
+//Route for login into user's dashboard
+app.post('/login', (req, res) => {
+    User.findOne({email: req.body.email}).then(async (user) => {
+        try {
+            if(!user){
+                res.statusCode = 404;
+                res.json({
+                    status: "User Not Found",
+                });
+                return;
+            } else {
+                if(user.password === req.body.password){
+                    res.statusCode = 200;
+                    res.json({
+                        status: "Login Successful",
+                        token: user.email+"-"+user.password
+                    });
+                } else {
+                    console.log(user.password, req.body.password, user.password === req.body.password);
+                    res.statusCode = 401;
+                    res.json({
+                        status: "Unauthorized Login Attempt",
+                    });
+                    return;
+                }
+            }
+        } catch(err){
+            res.status = 500;
+            res.json({
+                status: "Internal Server Error",
+            });
+        }
+    });
 });
 
 app.listen(3001);

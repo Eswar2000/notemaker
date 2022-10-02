@@ -2,8 +2,8 @@ import {useState} from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import {blue} from '@mui/material/colors';
 import Alert from '@mui/material/Alert';
-
-import {Avatar, Box, Button, Container, Link, TextField, Typography} from '@mui/material';
+import {Link} from 'react-router-dom';
+import {Avatar, Box, Button, Container, TextField, Typography} from '@mui/material';
 
 
 
@@ -68,11 +68,8 @@ function Register() {
         {alertFlag === -1 && <Alert severity="error">{alertMessage}</Alert>}
         {alertFlag === 1 && <Alert severity="success">{alertMessage}</Alert>}
         <Box height={4}/>
-        <Link href="#" variant="body2">
-            {"Forgot password?"}
-        </Link>
         <Box height={4}/>
-        <Link href="#" variant="body2">
+        <Link to="/signin" variant="body2">
             {"Have an account already? Sign In"}
         </Link>
         </Box>
