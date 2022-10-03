@@ -23,6 +23,7 @@ function Login() {
             let response = await fetch('http://localhost:3001/login', requestOptions);
             let responseBody = await response.json();
             if (response.status === 200) {
+                sessionStorage.setItem('Auth_Token', responseBody.token);
                 navigate('/home');
             } else {
                 setAlertFlag(-1);
