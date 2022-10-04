@@ -1,16 +1,20 @@
-import logo from './logo.svg';
 import './App.css';
+import Login from './screen/login';
+import Register from './screen/register';
+import Home from './screen/home';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <form action="../../temp" method="POST">
-          <button>Submit</button>
-        </form>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/signup" element={<Register />} />
+          <Route path="/signin" element={<Login />} />
+          <Route path="/home" element={<Home />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
