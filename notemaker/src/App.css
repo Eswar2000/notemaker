@@ -38,6 +38,18 @@ body {
 	background-color: white;
 }
 
+#brand-name {
+	flex-grow: 1;
+	color: black;
+	font-weight: bold;
+	font-size: 32px;
+	font-family: "Audiowide", sans-serif;
+}
+
+.app-icons {
+	color: black;
+}
+
 #appbar {
 	background: linear-gradient(45deg, #f7fda6 11.2%, #80ffdd 57.8%, #ff80f9 85.9%);
 	animation: gradient 15s ease infinite;

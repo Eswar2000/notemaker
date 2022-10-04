@@ -1,7 +1,7 @@
-import {useState} from 'react';
-import {Avatar, Box, Button, Container, Typography} from '@mui/material';
+// import {useState} from 'react';
+// import {Avatar, Box, Button, Container, Typography} from '@mui/material';
 
-import Appbar from '../components/appbar';
+import Appbar from '../components/Appbar';
 
 function home() {
     return (
