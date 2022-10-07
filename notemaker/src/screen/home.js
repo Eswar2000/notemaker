@@ -1,5 +1,6 @@
 import NoteBanner from '../notes_banner.png';
-import {Avatar, Divider, Grid, Box, Paper, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@mui/material';
+import {Avatar, Divider, Grid, Box, Paper, List, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
+import { grey } from '@mui/material/colors';
 import {NoteAdd, Edit, PushPin} from '@mui/icons-material';
 import Appbar from '../components/Appbar';
 
@@ -17,29 +18,29 @@ function home() {
                         <img src={NoteBanner} id='home-banner' alt='NoteMaker Home Banner'/>
                         <Divider />
                         <List>
-                            <ListItem>
+                            <ListItem className='list-item'>
                                 <ListItemAvatar>
-                                    <Avatar>
+                                    <Avatar sx={{ bgcolor: grey[700] }}>
                                         <NoteAdd fontSize='medium' />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary='Add Notes'/>
+                                <ListItemText primary='Add Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Create a new note' />
                             </ListItem>
-                            <ListItem>
+                            <ListItem className='list-item'>
                                 <ListItemAvatar>
-                                    <Avatar>
+                                    <Avatar sx={{ bgcolor: grey[700] }}>
                                         <Edit fontSize='medium' />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary='Edit Notes'/>
+                                <ListItemText primary='Edit Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Update existing notes'/>
                             </ListItem>
-                            <ListItem>
+                            <ListItem className='list-item'>
                                 <ListItemAvatar>
-                                    <Avatar>
+                                    <Avatar sx={{ bgcolor: grey[700] }}>
                                         <PushPin fontSize='medium' />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary='Pin Notes'/>
+                                <ListItemText primary='Pin Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Attach notes to the start of the list'/>
                             </ListItem>
                         </List>
                     </Paper>
