@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //Importing models
 const User = require('./models/UserSchema');
+const Note = require('./models/NoteSchema');
 
 //Database Connectivity
 const dbURL = 'mongodb://localhost:27017/notemaker';
@@ -87,9 +88,57 @@ app.post('/login', (req, res) => {
                 }
             }
         } catch(err){
-            res.status = 500;
+            res.statusCode = 500;
             res.json({
                 status: "Internal Server Error",
+            });
+        }
+    });
+});
+
+
+//Route to add a simple note
+app.post('/simpleNote',(req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        try {
+            if(user.password===req.headers['password']){
+                let newNote = {
+                    type: 'default',
+                    title: req.body.title,
+                    subject: req.body.subject,
+                    body: req.body.body,
+                    owner: req.headers['email'],
+                    shared: [],
+                };
+                
+                Note.create(newNote).then(() => {
+                    res.statusCode = 200;
+                    res.json({
+                        status: "Note added successfully",
+                    });
+                }, (err) => {
+                    res.statusCode = 500;
+                    res.json({
+                        status: "Internal server error",
+                    });
+                });
+            } else {
+                res.statusCode = 403;
+                res.json({
+                    status: "Unauthorized attempt to create a note",
+                });
+            }
+        } catch(err){
+            res.status = 500;
+            res.json({
+                status: 'Internal Server Error',
             });
         }
     });

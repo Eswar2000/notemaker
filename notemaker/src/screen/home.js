@@ -1,10 +1,17 @@
+import {useState} from 'react';
 import NoteBanner from '../notes_banner.png';
-import {Avatar, Divider, Grid, Box, Paper, List, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
+import {Avatar, Button, TextField, Divider, Grid, Box, Paper, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import { grey } from '@mui/material/colors';
 import {NoteAdd, Edit, PushPin} from '@mui/icons-material';
 import Appbar from '../components/Appbar';
 
-function home() {
+function Home() {
+
+    const [addNote, setAddNote] = useState(false);
+    const [noteTitle, setNoteTitle] = useState("");
+    const [noteSubject, setNoteSubject] = useState("");
+    const [noteBody, setNoteBody] = useState("");
+
     return (
         <div className='dashboard'>
             <Appbar />
@@ -18,7 +25,7 @@ function home() {
                         <img src={NoteBanner} id='home-banner' alt='NoteMaker Home Banner'/>
                         <Divider />
                         <List>
-                            <ListItem className='list-item'>
+                            <ListItem className='list-item' onClick={() => {setAddNote(true);}}>
                                 <ListItemAvatar>
                                     <Avatar sx={{ bgcolor: grey[700] }}>
                                         <NoteAdd fontSize='medium' />
@@ -43,6 +50,21 @@ function home() {
                                 <ListItemText primary='Pin Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Attach notes to the start of the list'/>
                             </ListItem>
                         </List>
+                        <Dialog open={addNote} onClose={() => {setAddNote(false);}}>
+                            <DialogTitle>Add a simple note</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    To add a simple note, fill in the details required. These can be later updated as per requirements.
+                                </DialogContentText>
+                                <TextField margin="dense" id="title" label="Note Title" variant="standard" onChange={e => {setNoteTitle(e.target.value)}} fullWidth />
+                                <TextField margin="dense" id="subject" label="Note Subject" variant="standard" onChange={e => {setNoteSubject(e.target.value)}} fullWidth />
+                                <TextField margin="dense" id="body" label="Note Body" variant="standard" onChange={e => {setNoteBody(e.target.value)}} fullWidth />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => {setAddNote(false);}}>Cancel</Button>
+                                <Button onClick={() => {setAddNote(false);}}>Subscribe</Button>
+                            </DialogActions>
+                        </Dialog>
                     </Paper>
                 </Grid>
             </Grid>
@@ -50,4 +72,4 @@ function home() {
     );
 }
 
-export default home;
+export default Home;
