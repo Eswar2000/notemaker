@@ -96,6 +96,41 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.get('/note', (req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        if(user && user.password === req.headers['password']){
+            Note.find({owner: req.headers['email']}).then(async (notes) => {
+                if(notes.length !== 0){
+                    res.statusCode = 200;
+                    res.json({
+                        status: "Notes retreived",
+                        notes: notes
+                    });
+                    return;
+                } else {
+                    res.statusCode = 404;
+                    res.json({
+                        status: "No notes found"
+                    });
+                }
+            });
+        } else {
+            res.statusCode = 401;
+            res.json({
+                status: "Unauthorized activity to get notes"
+            });
+        }
+        
+    });
+});
+
 
 //Route to add a simple note
 app.post('/simpleNote',(req, res) => {
@@ -136,9 +171,9 @@ app.post('/simpleNote',(req, res) => {
                 });
             }
         } catch(err){
-            res.status = 500;
+            res.statusCode = 404;
             res.json({
-                status: 'Internal Server Error',
+                status: 'User not found',
             });
         }
     });

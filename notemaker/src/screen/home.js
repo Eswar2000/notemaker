@@ -5,12 +5,25 @@ import { grey } from '@mui/material/colors';
 import {NoteAdd, Edit, PushPin} from '@mui/icons-material';
 import Appbar from '../components/Appbar';
 
+
 function Home() {
 
     const [addNote, setAddNote] = useState(false);
     const [noteTitle, setNoteTitle] = useState("");
     const [noteSubject, setNoteSubject] = useState("");
     const [noteBody, setNoteBody] = useState("");
+
+    const simpleNoteHandler = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', email: email, password: password},
+            body: JSON.stringify({title: noteTitle, subject: noteSubject, body: noteBody})
+        };
+        let response = await fetch('http://localhost:3001/simpleNote', requestOptions);
+        // let responseBody = await response.json();
+        setAddNote(false);
+    }
 
     return (
         <div className='dashboard'>
@@ -56,13 +69,13 @@ function Home() {
                                 <DialogContentText>
                                     To add a simple note, fill in the details required. These can be later updated as per requirements.
                                 </DialogContentText>
-                                <TextField margin="dense" id="title" label="Note Title" variant="standard" onChange={e => {setNoteTitle(e.target.value)}} fullWidth />
-                                <TextField margin="dense" id="subject" label="Note Subject" variant="standard" onChange={e => {setNoteSubject(e.target.value)}} fullWidth />
-                                <TextField margin="dense" id="body" label="Note Body" variant="standard" onChange={e => {setNoteBody(e.target.value)}} fullWidth />
+                                <TextField margin="dense" id="title" label="Note Title" onChange={event => {setNoteTitle(event.target.value)}} fullWidth />
+                                <TextField margin="dense" id="subject" label="Note Subject" onChange={event => {setNoteSubject(event.target.value)}} fullWidth />
+                                <TextField margin="dense" id="body" label="Note Body" onChange={event => {setNoteBody(event.target.value)}} rows={4} fullWidth multiline/>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={() => {setAddNote(false);}}>Cancel</Button>
-                                <Button onClick={() => {setAddNote(false);}}>Subscribe</Button>
+                                <Button onClick={async () => simpleNoteHandler()}>Add</Button>
                             </DialogActions>
                         </Dialog>
                     </Paper>
