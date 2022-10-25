@@ -110,7 +110,7 @@ app.get('/note', (req, res) => {
                 if(notes.length !== 0){
                     res.statusCode = 200;
                     res.json({
-                        status: "Notes retreived",
+                        // status: "Notes retreived",
                         notes: notes
                     });
                     return;
