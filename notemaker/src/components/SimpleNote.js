@@ -3,11 +3,11 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function SimpleNote({title, subject, body, created}){
+function SimpleNote({note}){
 
 
     const timeConvertor = () => {
-        let date_parsed = new Date(created);
+        let date_parsed = new Date(note.updatedAt);
         let date_str = date_parsed.toString();
         let date_arr = date_str.split(" ")
         return date_arr[2]+" "+ date_arr[1]+", "+date_arr[3];
@@ -19,7 +19,7 @@ function SimpleNote({title, subject, body, created}){
                 <Grid container spacing={2}>
                     <Grid item xs={10}>
                         <Typography id='card-head'>
-                            {title}
+                            {note.title}
                         </Typography>
                         <Typography id='card-time'>
                             On {timeConvertor()}
@@ -35,10 +35,10 @@ function SimpleNote({title, subject, body, created}){
                 <Divider variant='inset'/>
                 <Box height={8}/>
                 <Typography id='card-sub'>
-                    {subject}
+                    {note.subject}
                 </Typography>
                 <Typography component='p' variant='body2'>
-                    {body}
+                    {note.body}
                 </Typography>
             </CardContent>
             <CardActions className='action-menu'>
