@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import {Grid, Box} from '@mui/material';
 import Appbar from '../components/Appbar';
 import Sidebar from '../components/Sidebar';
-import Bulletin from '../components/Bulletin';
+import SimpleNote from '../components/SimpleNote';
 
 
 function Home() {
@@ -31,7 +31,11 @@ function Home() {
             <Box height={8} />
             <Grid id={'dashboard-content'} container spacing={4}>
                 <Grid item xs={9}>
-                    <Bulletin notes={notes}/>
+                    <Grid container id='bulletin' spacing={2}>
+                        {notes && notes.map((note,index)=>{
+                            return <Grid item xs={4} key={index}><SimpleNote note={note} onDelete={getNotes}/></Grid>
+                        })}
+                    </Grid>
                 </Grid>
                 <Grid item xs={3}>
                     <Sidebar onAddNote={getNotes}/>

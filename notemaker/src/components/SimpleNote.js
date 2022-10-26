@@ -3,14 +3,27 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function SimpleNote({note}){
+function SimpleNote({note, onDelete}){
 
 
     const timeConvertor = () => {
         let date_parsed = new Date(note.updatedAt);
         let date_str = date_parsed.toString();
-        let date_arr = date_str.split(" ")
+        let date_arr = date_str.split(" ");
         return date_arr[2]+" "+ date_arr[1]+", "+date_arr[3];
+    }
+
+    const deleteNote = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json', email: email, password: password}
+        };
+        let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        // let responseBody = await response.json();
+        if(response.status === 200){
+            onDelete();
+        }
     }
 
     return (
@@ -22,7 +35,7 @@ function SimpleNote({note}){
                             {note.title}
                         </Typography>
                         <Typography id='card-time'>
-                            On {timeConvertor()}
+                            Updated On {timeConvertor()}
                         </Typography>
                     </Grid>
                     <Grid item xs={2}>
@@ -45,7 +58,7 @@ function SimpleNote({note}){
                 <IconButton>
                     <EditIcon color='success'/>
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={() => {deleteNote()}}>
                     <DeleteIcon color='error'/>
                 </IconButton>
             </CardActions>

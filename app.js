@@ -96,6 +96,7 @@ app.post('/login', (req, res) => {
     });
 });
 
+//Route to fetch all notes
 app.get('/note', (req, res) => {
     if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
         res.statusCode = 400;
@@ -125,6 +126,47 @@ app.get('/note', (req, res) => {
             res.statusCode = 401;
             res.json({
                 status: "Unauthorized activity to get notes"
+            });
+        }
+        
+    });
+});
+
+//Route to delete a note by its ID
+app.delete('/note/:id', (req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        if(user && user.password === req.headers['password']){
+            let note_id = new mongoose.Types.ObjectId(req.params.id);
+            Note.findOneAndDelete({owner: req.headers['email'], _id: note_id}, (err, note) => {
+                if(err){
+                    res.statusCode = 500;
+                    res.json({
+                        status: "Error deleting note",
+                    });
+                    return;
+                } else if(note){
+                    res.statusCode = 200;
+                    res.json({
+                        status: "Note deleted",
+                    });
+                } else {
+                    res.statusCode = 404;
+                    res.json({
+                        status: "Note not found",
+                    });
+                }
+            });
+        } else {
+            res.statusCode = 401;
+            res.json({
+                status: "Unauthorized activity to delete notes"
             });
         }
         
