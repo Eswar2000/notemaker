@@ -33,7 +33,7 @@ function Home() {
                 <Grid item xs={9}>
                     <Grid container id='bulletin' spacing={2}>
                         {notes && notes.map((note,index)=>{
-                            return <Grid item xs={4} key={index}><SimpleNote note={note} onDelete={getNotes}/></Grid>
+                            return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes}/></Grid>
                         })}
                     </Grid>
                 </Grid>

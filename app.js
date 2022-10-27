@@ -173,6 +173,47 @@ app.delete('/note/:id', (req, res) => {
     });
 });
 
+//Route to update a note by its ID
+app.put('/note/:id', (req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        if(user && user.password === req.headers['password']){
+            let note_id = new mongoose.Types.ObjectId(req.params.id);
+            Note.findByIdAndUpdate(note_id, req.body , (err, note) => {
+                if(err){
+                    res.statusCode = 500;
+                    res.json({
+                        status: "Error updating the note",
+                    });
+                    return;
+                } else if(note){
+                    res.statusCode = 200;
+                    res.json({
+                        status: "Note updated",
+                    });
+                } else {
+                    res.statusCode = 404;
+                    res.json({
+                        status: "Note not found",
+                    });
+                }
+            });
+        } else {
+            res.statusCode = 401;
+            res.json({
+                status: "Unauthorized activity to update notes"
+            });
+        }
+        
+    });
+});
+
 
 //Route to add a simple note
 app.post('/simpleNote',(req, res) => {

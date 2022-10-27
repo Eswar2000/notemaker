@@ -55,7 +55,7 @@ function Sidebar ({onAddNote}) {
                             <Edit fontSize='medium' />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary='Edit Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Update existing notes'/>
+                    <ListItemText primary='Add checklist' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Create a checklist'/>
                 </ListItem>
                 <ListItem className='list-item'>
                     <ListItemAvatar>
@@ -63,7 +63,7 @@ function Sidebar ({onAddNote}) {
                             <PushPin fontSize='medium' />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary='Pin Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Attach notes to the start of the list'/>
+                    <ListItemText primary='Sort Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Arrange notes in order'/>
                 </ListItem>
             </List>
             <Dialog open={addNote} onClose={() => {setAddNote(false);}}>
