@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {Grid, Box} from '@mui/material';
+import {Grid, Box, Snackbar} from '@mui/material';
 import Appbar from '../components/Appbar';
 import Sidebar from '../components/Sidebar';
 import SimpleNote from '../components/SimpleNote';
@@ -7,6 +7,12 @@ import SimpleNote from '../components/SimpleNote';
 
 function Home() {
     const [notes, setNotes] = useState([]);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [snack, setSnack] = useState(false);
+
+    const onSnackClose = () => {
+        setSnack(false);
+    }
 
     const getNotes = async () => {
         let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
@@ -33,14 +39,15 @@ function Home() {
                 <Grid item xs={9}>
                     <Grid container id='bulletin' spacing={2}>
                         {notes && notes.map((note,index)=>{
-                            return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes}/></Grid>
+                            return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage}/></Grid>
                         })}
                     </Grid>
                 </Grid>
                 <Grid item xs={3}>
-                    <Sidebar onAddNote={getNotes}/>
+                    <Sidebar onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage}/>
                 </Grid>
             </Grid>
+            <Snackbar open={snack} autoHideDuration={3000} onClose={onSnackClose} message={alertMessage} />
         </div>
     );
 }

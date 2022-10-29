@@ -4,7 +4,7 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function SimpleNote({note, onModify}){
+function SimpleNote({note, onModify, alertHandler, alertMessageHandler}){
 
     const [editNote, setEditNote] = useState(false);
     const [noteTitle, setNoteTitle] = useState(note.title);
@@ -26,8 +26,11 @@ function SimpleNote({note, onModify}){
             headers: {'Content-Type': 'application/json', email: email, password: password}
         };
         let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        let responseBody = await response.json();
         if(response.status === 200){
             onModify();
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
         }
     }
 
@@ -51,8 +54,11 @@ function SimpleNote({note, onModify}){
                 body: JSON.stringify(temp)
             };
             let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+            let responseBody = await response.json();
             if(response.status === 200){
                 onModify();
+                alertMessageHandler(responseBody.status);
+                alertHandler(true);
             }
 
         }

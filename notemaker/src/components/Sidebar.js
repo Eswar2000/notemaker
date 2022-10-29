@@ -1,18 +1,16 @@
 import {useState} from 'react';
 import NoteBanner from '../notes_banner.png';
-import {Avatar, Button, Snackbar, TextField, Divider, Paper, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import {Avatar, Button, TextField, Divider, Paper, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import { grey } from '@mui/material/colors';
 import {NoteAdd, Edit, PushPin} from '@mui/icons-material';
 
 
-function Sidebar ({onAddNote}) {
+function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
     
     const [addNote, setAddNote] = useState(false);
     const [noteTitle, setNoteTitle] = useState("");
     const [noteSubject, setNoteSubject] = useState("");
     const [noteBody, setNoteBody] = useState("");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [snack, setSnack] = useState(false);
     
 
     const simpleNoteHandler = async () => {
@@ -26,14 +24,10 @@ function Sidebar ({onAddNote}) {
         let responseBody = await response.json();
         setAddNote(false);
         if(response.status === 200){
-            setAlertMessage(responseBody.status);
-            setSnack(true);
-            onAddNote();
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
+            onModify();
         }
-    }
-
-    const onSnackClose = () => {
-        setSnack(false);
     }
     
     return (
@@ -81,7 +75,6 @@ function Sidebar ({onAddNote}) {
                     <Button onClick={async () => simpleNoteHandler()}>Add</Button>
                 </DialogActions>
             </Dialog>
-            <Snackbar open={snack} autoHideDuration={3000} onClose={onSnackClose} message={alertMessage} />
         </Paper>
     );
 }
