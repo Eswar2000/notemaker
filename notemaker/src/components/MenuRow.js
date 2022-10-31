@@ -10,7 +10,7 @@ function MenuRow({element, checked, pos, toggle}){
       <ListItem id='checklist-row'
           key={pos}
           secondaryAction={ checked && 
-              <IconButton>
+              <IconButton onClick={async () => {toggle("erase", pos);}}>
                 <BackspaceIcon color='error'/>
               </IconButton>
             }

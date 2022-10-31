@@ -79,7 +79,6 @@ app.post('/login', (req, res) => {
                         token: user.email+"-"+user.password
                     });
                 } else {
-                    console.log(user.password, req.body.password, user.password === req.body.password);
                     res.statusCode = 401;
                     res.json({
                         status: "Unauthorized Login Attempt",
@@ -286,6 +285,49 @@ app.put('/checklist/:id', (req, res) => {
                         res.statusCode = 200;
                         res.json({
                             status: "Checklist updated",
+                        });
+                    } else {
+                        res.statusCode = 404;
+                        res.json({
+                            status: "Checklist not found",
+                        });
+                    }
+                });
+            } else if(req.body.action==='erase'){
+                let attr = "menuChecked."+req.body.index;
+                Note.findByIdAndUpdate(note_id, {$unset: {[attr]: 1}}).then(() => {
+                    Note.findByIdAndUpdate(note_id, {$pull: {"menuChecked": null}}, (err, note) => {
+                        if(err){
+                            res.statusCode = 500;
+                            res.json({
+                                status: "Error erasing the checklist element",
+                            });
+                            return;
+                        } else if(note){
+                            res.statusCode = 200;
+                            res.json({
+                                status: "Checklist element erased",
+                            });
+                        } else {
+                            res.statusCode = 404;
+                            res.json({
+                                status: "Checklist not found",
+                            });
+                        }
+                    });
+                });
+            } else if(req.body.action==='add') {
+                Note.findByIdAndUpdate(note_id, {$push: {"menu": req.body.element}}, (err, note) => {
+                    if(err){
+                        res.statusCode = 500;
+                        res.json({
+                            status: "Error adding the checklist element",
+                        });
+                        return;
+                    } else if(note){
+                        res.statusCode = 200;
+                        res.json({
+                            status: "Checklist item added",
                         });
                     } else {
                         res.statusCode = 404;

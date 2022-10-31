@@ -8,6 +8,7 @@ import MenuRow from './MenuRow';
 
 
 function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
+    const [checklistItem, setChecklistItem] = useState("");
     const [checklistTitle, setChecklistTitle] =  useState(note.title);
     const [titleEdit, setTitleEdit] = useState(false);
 
@@ -25,6 +26,12 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
             temp['action'] = type;
             temp['index'] = modifier;
             temp['element'] = note["menuChecked"][modifier];
+        } else if(type==="erase" && modifier >=0 && modifier < note['menuChecked'].length){
+            temp['action'] = type;
+            temp['index'] = modifier;
+        } else if(type==="add" && modifier.length!==0){
+            temp['action'] = type;
+            temp['element'] = modifier;
         } else {
             alertMessageHandler("Invalid Checklist Action");
             alertHandler(true);
@@ -38,6 +45,12 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
         let response = await fetch('http://localhost:3001/checklist/'+note._id, requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
+            if(type==="add"){
+                setChecklistItem("");
+            }
+            if(type==="general"){
+                setTitleEdit(false);
+            }
             onModify();
             alertMessageHandler(responseBody.status);
             alertHandler(true);
@@ -78,7 +91,7 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={() => {setTitleEdit(false);}}>Cancel</Button>
-                                <Button onClick={async () => {updateChecklistHandler("general", checklistTitle);setTitleEdit(false);}}>Update</Button>
+                                <Button onClick={async () => {updateChecklistHandler("general", checklistTitle);}}>Update</Button>
                             </DialogActions>
                         </Dialog>
                     </Grid>
@@ -96,15 +109,17 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
                 <TextField
                     label="Add Item"
                     size='small'
+                    value={checklistItem}
                     InputProps={{
                     endAdornment: (
                         <InputAdornment position='start'>
-                            <IconButton>
+                            <IconButton onClick={async () => {updateChecklistHandler("add", checklistItem);}}>
                                 <AddCircleIcon color='info'/>
                             </IconButton>
                         </InputAdornment>
                     )
                     }}
+                    onChange={event => {setChecklistItem(event.target.value)}}
                     fullWidth
                 />
                 {note.menu && note['menu'].map((element,index)=>{
