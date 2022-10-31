@@ -1,11 +1,15 @@
-import {Card, TextField, InputAdornment, Grid, Box, Divider, IconButton, CardContent, CardActions, Typography} from '@mui/material';
+import {useState} from 'react';
+import {Card, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, Typography} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import MenuRow from './MenuRow';
 
 
 
 function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
+    const [checklistTitle, setChecklistTitle] =  useState(note.title);
+    const [titleEdit, setTitleEdit] = useState(false);
 
     const updateChecklistHandler = async (type, modifier) => {
         let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
@@ -40,13 +44,55 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
         }
     }
 
+    const deleteChecklistHandler = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json', email: email, password: password}
+        };
+        let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        let responseBody = await response.json();
+        if(response.status === 200){
+            onModify();
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
+        }
+    }
+
 
     return (
         <Card className='check-list-card'>
             <CardContent>
-                <Typography id='card-head'>
-                    {note.title}
-                </Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={9}>
+                        <Typography id='card-head'>
+                            {note.title}
+                        </Typography>
+                        <Dialog open={titleEdit} onClose={() => {setTitleEdit(false);}}>
+                            <DialogTitle>Edit Checklist</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Update checklist title and submit. Make sure that the field is not left empty.
+                                </DialogContentText>
+                                <TextField margin="dense" id="title" label="Note Title" value={checklistTitle} onChange={event => {setChecklistTitle(event.target.value)}} fullWidth />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => {setTitleEdit(false);}}>Cancel</Button>
+                                <Button onClick={async () => {updateChecklistHandler("general", checklistTitle);setTitleEdit(false);}}>Update</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton onClick={() => {setTitleEdit(true);}}>
+                            <EditIcon color='success'/>
+                        </IconButton>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton onClick={() => {deleteChecklistHandler()}}>
+                            <DeleteIcon color='error'/>
+                        </IconButton>
+                    </Grid>
+                </Grid>
                 <TextField
                     label="Add Item"
                     size='small'

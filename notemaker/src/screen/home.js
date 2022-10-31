@@ -43,8 +43,17 @@ function Home() {
                             if(note.type==='default'){
                                 return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage}/></Grid>
                             } else {
-                                return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage} /></Grid>       
-                            } 
+                                return null;
+                            }
+                        })}
+                    </Grid>
+                    <Grid container id='bulletin' spacing={2}>
+                        {notes && notes.map((note,index)=>{
+                            if(note.type==='checklist'){
+                                return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage} /></Grid>
+                            } else {
+                                return null;
+                            }
                         })}
                     </Grid>
                 </Grid>
