@@ -3,6 +3,7 @@ import {Grid, Box, Snackbar} from '@mui/material';
 import Appbar from '../components/Appbar';
 import Sidebar from '../components/Sidebar';
 import SimpleNote from '../components/SimpleNote';
+import Checklist from '../components/Checklist';
 
 
 function Home() {
@@ -39,7 +40,11 @@ function Home() {
                 <Grid item xs={9}>
                     <Grid container id='bulletin' spacing={2}>
                         {notes && notes.map((note,index)=>{
-                            return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage}/></Grid>
+                            if(note.type==='default'){
+                                return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage}/></Grid>
+                            } else {
+                                return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage} /></Grid>       
+                            } 
                         })}
                     </Grid>
                 </Grid>

@@ -262,4 +262,81 @@ app.post('/simpleNote',(req, res) => {
     });
 });
 
+//Route to update a checklist by its ID
+app.put('/checklist/:id', (req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        if(user && user.password === req.headers['password']){
+            let note_id = new mongoose.Types.ObjectId(req.params.id);
+            if(req.body.action==='general'){
+                Note.findByIdAndUpdate(note_id, {"title":req.body.title} , (err, note) => {
+                    if(err){
+                        res.statusCode = 500;
+                        res.json({
+                            status: "Error updating the checklist",
+                        });
+                        return;
+                    } else if(note){
+                        res.statusCode = 200;
+                        res.json({
+                            status: "Checklist updated",
+                        });
+                    } else {
+                        res.statusCode = 404;
+                        res.json({
+                            status: "Checklist not found",
+                        });
+                    }
+                });
+            } else {
+                let cur, alt, attr;
+                if(req.body.action==="check") {
+                    cur = "menu";
+                    alt = "menuChecked"
+                } else {
+                    cur = "menuChecked";
+                    alt = "menu";
+                }
+                attr = cur+"."+req.body.index;
+                Note.findByIdAndUpdate(note_id, {$unset: {[attr]: 1}}).then(() => {
+                    Note.findByIdAndUpdate(note_id, {$pull: {[cur]: null}}).then(() => {
+                        Note.findByIdAndUpdate(note_id, {$push: {[alt]: req.body.element}}, (err, note) => {
+                            if(err){
+                                res.statusCode = 500;
+                                res.json({
+                                    status: "Error toggling the checklist elements",
+                                });
+                                return;
+                            } else if(note){
+                                res.statusCode = 200;
+                                res.json({
+                                    status: "Checklist element toggled",
+                                });
+                            } else {
+                                res.statusCode = 404;
+                                res.json({
+                                    status: "Checklist not found",
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+            
+        } else {
+            res.statusCode = 401;
+            res.json({
+                status: "Unauthorized activity to update notes"
+            });
+        }
+        
+    });
+});
+
 app.listen(3001);

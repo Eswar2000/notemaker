@@ -113,3 +113,20 @@ body {
 	justify-content: space-between;
 }
 
+.check-list-card {
+	min-width: 300px;
+	min-height: 350px;
+	margin: auto;
+}
+
+#checklist-row {
+	padding: 0px 16px;
+}
+
+#menu-element {
+	font-size: 18px;
+	font-weight: 500;
+	padding-top: 8px;
+	font-family: "Audiowide", sans-serif;
+}
+
