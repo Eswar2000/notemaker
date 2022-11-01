@@ -49,7 +49,7 @@ function Home() {
                     </Grid>
                     <Grid container id='bulletin' spacing={2}>
                         {notes && notes.map((note,index)=>{
-                            if(note.type==='checklist'){
+                            if(note.type==='list'){
                                 return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage} /></Grid>
                             } else {
                                 return null;
@@ -61,7 +61,7 @@ function Home() {
                     <Sidebar onModify={getNotes} alertHandler={setSnack} alertMessageHandler={setAlertMessage}/>
                 </Grid>
             </Grid>
-            <Snackbar open={snack} autoHideDuration={3000} onClose={onSnackClose} message={alertMessage} />
+            <Snackbar open={snack} autoHideDuration={2500} onClose={onSnackClose} message={alertMessage} />
         </div>
     );
 }

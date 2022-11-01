@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Card, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, Typography} from '@mui/material';
+import {Card, Box, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, Typography} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -106,6 +106,7 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
                         </IconButton>
                     </Grid>
                 </Grid>
+                <Box height={8} />
                 <TextField
                     label="Add Item"
                     size='small'
@@ -125,7 +126,7 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
                 {note.menu && note['menu'].map((element,index)=>{
                     return <MenuRow element={element} key={index} pos={index} checked={false} toggle={updateChecklistHandler}/>
                 })}
-                <Divider variant='middle' />
+                {note["menu"].length!==0 && note["menuChecked"].length!==0 && <Divider variant='middle' />}
                 {note.menuChecked && note['menuChecked'].map((element,index)=>{
                     return <MenuRow element={element} key={index} pos={index} checked={true} toggle={updateChecklistHandler}/>
                 })}

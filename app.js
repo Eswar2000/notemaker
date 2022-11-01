@@ -215,7 +215,7 @@ app.put('/note/:id', (req, res) => {
 
 
 //Route to add a simple note
-app.post('/simpleNote',(req, res) => {
+app.post('/note',(req, res) => {
     if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
         res.statusCode = 400;
         res.json({
@@ -227,13 +227,16 @@ app.post('/simpleNote',(req, res) => {
         try {
             if(user.password===req.headers['password']){
                 let newNote = {
-                    type: 'default',
+                    type: req.body.type,
                     title: req.body.title,
-                    subject: req.body.subject,
-                    body: req.body.body,
                     owner: req.headers['email'],
                     shared: [],
                 };
+
+                if(req.body.type === 'default'){
+                    newNote['subject'] = req.body.subject;
+                    newNote['body'] = req.body.body;
+                }
                 
                 Note.create(newNote).then(() => {
                     res.statusCode = 200;

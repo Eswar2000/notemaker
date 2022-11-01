@@ -11,16 +11,34 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
     const [noteTitle, setNoteTitle] = useState("");
     const [noteSubject, setNoteSubject] = useState("");
     const [noteBody, setNoteBody] = useState("");
+    const [checklistTitle, setChecklistTitle] = useState("");
+    const [addChecklist, setAddChecklist] = useState(false);
     
+    const checklistHandler = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', email: email, password: password},
+            body: JSON.stringify({type:'list',title: checklistTitle})
+        };
+        let response = await fetch('http://localhost:3001/note', requestOptions);
+        let responseBody = await response.json();
+        setAddChecklist(false);
+        if(response.status === 200){
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
+            onModify();
+        }
+    }
 
     const simpleNoteHandler = async () => {
         let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
         let requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json', email: email, password: password},
-            body: JSON.stringify({title: noteTitle, subject: noteSubject, body: noteBody})
+            body: JSON.stringify({type:'default',title: noteTitle, subject: noteSubject, body: noteBody})
         };
-        let response = await fetch('http://localhost:3001/simpleNote', requestOptions);
+        let response = await fetch('http://localhost:3001/note', requestOptions);
         let responseBody = await response.json();
         setAddNote(false);
         if(response.status === 200){
@@ -43,7 +61,7 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
                     </ListItemAvatar>
                     <ListItemText primary='Add Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Create a new note' />
                 </ListItem>
-                <ListItem className='list-item'>
+                <ListItem className='list-item' onClick={() => {setAddChecklist(true);}}>
                     <ListItemAvatar>
                         <Avatar sx={{ bgcolor: grey[700] }}>
                             <Edit fontSize='medium' />
@@ -73,6 +91,20 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
                 <DialogActions>
                     <Button onClick={() => {setAddNote(false);}}>Cancel</Button>
                     <Button onClick={async () => simpleNoteHandler()}>Add</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={addChecklist} onClose={() => {setAddChecklist(false);}}>
+                <DialogTitle>Add a checklist</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        To add a checklist, fill in the title. Menu items can be added later.
+                    </DialogContentText>
+                    <TextField margin="dense" id="title" label="Checklist Title" onChange={event => {setChecklistTitle(event.target.value)}} fullWidth />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setAddChecklist(false);}}>Cancel</Button>
+                    <Button onClick={async () => checklistHandler()}>Add</Button>
                 </DialogActions>
             </Dialog>
         </Paper>
