@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {Box, Snackbar} from '@mui/material';
 import Appbar from '../components/Appbar';
 import Bulletin from '../components/Bulletin';
+import Profile from '../components/Profile';
 
 function Home() {
     
@@ -20,6 +21,7 @@ function Home() {
             <Appbar />
             <Box height={8} />
             <Bulletin alertHandler={setSnack} alertMessageHandler={setAlertMessage} />
+            {/* <Profile /> */}
             <Snackbar open={snack} autoHideDuration={2500} onClose={onSnackClose} message={alertMessage} />
         </div>
     );

@@ -32,7 +32,8 @@ function Login() {
     }
 
   return (
-    <Container className='form-card' maxWidth='xs'>
+    <div className='screen'>
+        <Container className='form-card' maxWidth='xs'>
         <Avatar className='avatars' sx={{ bgcolor: blue[700] }}>
             <FaceIcon fontSize='large' />
         </Avatar >
@@ -58,6 +59,7 @@ function Login() {
         </Link>
         </Box>
       </Container>
+    </div>
   );
 }
 

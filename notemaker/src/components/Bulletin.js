@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {Grid} from '@mui/material';
+import {Box, Grid} from '@mui/material';
 import Sidebar from './Sidebar';
 import SimpleNote from './SimpleNote';
 import Checklist from './Checklist';
@@ -32,7 +32,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
     return (
         <Grid id={'dashboard-content'} container spacing={4}>
             <Grid item xs={9}>
-                <Grid container id='bulletin' spacing={2}>
+                <Grid container spacing={2}>
                     {notes && notes.map((note,index)=>{
                         if(note.type==='default'){
                             return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler}/></Grid>
@@ -41,7 +41,8 @@ function Bulletin({alertHandler, alertMessageHandler}){
                         }
                     })}
                 </Grid>
-                <Grid container id='bulletin' spacing={2}>
+                <Box height={24} />
+                <Grid container spacing={2}>
                     {notes && notes.map((note,index)=>{
                         if(note.type==='list'){
                             return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
