@@ -10,11 +10,6 @@ function Profile(){
                 <Card>
                     <CardContent>
                         <img src={ProfileBanner} id='profile-banner' alt='NoteMaker Profile Banner' />
-                        <Box height={8} />
-                        <Typography>
-                            Your profile describes your personal data and the details regarding your notes. Please feel free to update your profile as required
-                            to maintain latest informations.
-                        </Typography>
                     </CardContent>
                 </Card>
             </Grid>

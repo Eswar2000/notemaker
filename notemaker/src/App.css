@@ -130,3 +130,9 @@
 #dashboard-content {
 	padding: 16px;
 }
+
+#banner-text {
+	font-size: 18px;
+	font-weight: 500;
+	font-family: "Audiowide", sans-serif;
+}
