@@ -1,15 +1,30 @@
-// import {useState} from 'react';
-// import {Avatar, Box, Button, Container, Typography} from '@mui/material';
-
+import {useState} from 'react';
+import {Box, Snackbar} from '@mui/material';
 import Appbar from '../components/Appbar';
+import Bulletin from '../components/Bulletin';
+import Profile from '../components/Profile';
 
-function home() {
+function Home() {
+    
+    const [alertMessage, setAlertMessage] = useState("");
+    const [snack, setSnack] = useState(false);
+
+    const onSnackClose = () => {
+        setSnack(false);
+    }
+
+    
+
+
     return (
         <div className='dashboard'>
             <Appbar />
-            <h1>Dashboard Here</h1>
+            <Box height={8} />
+            <Bulletin alertHandler={setSnack} alertMessageHandler={setAlertMessage} />
+            {/* <Profile /> */}
+            <Snackbar open={snack} autoHideDuration={2500} onClose={onSnackClose} message={alertMessage} />
         </div>
     );
 }
 
-export default home;
+export default Home;
