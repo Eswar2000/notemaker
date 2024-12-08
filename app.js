@@ -95,6 +95,73 @@ app.post('/login', (req, res) => {
     });
 });
 
+//Route to fetch all users except the one in the headers
+app.get('/share-user', (req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        if(user && user.password === req.headers['password']){
+            User.find({$and: [{email: {$ne: req.headers['email']}}, {name: {$ne: 'admin'}}]}).select({name: 1, email: 1, _id: 1}).then(async (userlist) => {
+                if(userlist && userlist.length !== 0){
+                    res.statusCode = 200;
+                    res.json({
+                        users: userlist
+                    })
+                } else {
+                    res.statusCode = 404;
+                    res.json({
+                        status: "No users found to share"
+                    });
+                }
+            })
+        } else {
+            res.statusCode = 401;
+            res.json({
+                status: "Unauthorized activity to get other user details"
+            });
+        }
+    })
+})
+
+app.get('/all-notes', (req, res) => {
+    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
+        res.statusCode = 400;
+        res.json({
+            status: "Bad Request",
+        });
+        return;
+    }
+    User.findOne({email: req.headers['email']}).then(async (user) => {
+        if(user && user.password === req.headers['password']){
+            Note.find({$or: [{'owner': req.headers['email']}, {shared: {$in: [req.headers['email']]}}]}).then(async (notes) => {
+                if(notes.length !== 0){
+                    res.statusCode = 200;
+                    res.json({
+                        notes: notes
+                    });
+                    return;
+                } else {
+                    res.statusCode = 404;
+                    res.json({
+                        status: "No notes found"
+                    });
+                }
+            });
+        } else {
+            res.statusCode = 401;
+            res.json({
+                status: "Unauthorized activity to get notes"
+            });
+        }
+        
+    });
+})
+
 //Route to fetch all notes
 app.get('/note', (req, res) => {
     if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
