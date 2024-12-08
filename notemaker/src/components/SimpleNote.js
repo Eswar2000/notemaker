@@ -113,9 +113,9 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                         </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                        {
-                            (getNoteOwnership()) ? <IconButton onClick={() => {setShareNoteDialog(true);}}><AttachmentIcon color='info'/></IconButton> : null
-                        }
+                        <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!getNoteOwnership()}>
+                            <AttachmentIcon color={getNoteOwnership() ? 'info' : 'disabled'}/>
+                        </IconButton>
                     </Grid>
                 </Grid>
                 <Box height={8}/>
@@ -148,8 +148,8 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                     </DialogActions>
                 </Dialog>
                 <SharedUserList shared={noteSharedList} shareableUserPool={shareableUsers} shareNoteBool={shareNoteDialog} shareNoteBoolHandler={setShareNoteDialog} sharedUserHandler={setNoteSharedList} sharedNoteUpdateHandler={shareNoteHandler}/>
-                <IconButton onClick={() => {deleteNoteHandler()}}>
-                    <DeleteIcon color='error'/>
+                <IconButton onClick={() => {deleteNoteHandler()}} disabled={!getNoteOwnership()}>
+                    <DeleteIcon color={getNoteOwnership() ? 'error' : 'disabled'}/>
                 </IconButton>
             </CardActions>
         </Card>

@@ -68,7 +68,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
                 <Grid container spacing={2}>
                     {notes && notes.map((note,index)=>{
                         if(note.type==='list'){
-                            return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
+                            return <Grid item xs={4} key={index}><Checklist note={note} shareableUsers={userList} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
                         } else {
                             return null;
                         }
