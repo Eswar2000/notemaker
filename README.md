@@ -25,7 +25,7 @@ Follow these steps to setup your own version of notemaker locally.
 - **Node.js** (version 16.x or higher is preferred)
 - **MongoDB** (A local setup of MongoDB or cloud based Atlas is preferred)
 
-### 1.Clone the repository
+### 1. Clone the repository
 ```bash
 git clone https://github.com/Eswar2000/notemaker.git
 ```
