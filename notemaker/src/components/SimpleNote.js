@@ -3,13 +3,16 @@ import {Card, Button, TextField, Grid, Box, Divider, IconButton, CardContent, Ca
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SharedUserList from './SharedUserList';
 
-function SimpleNote({note, onModify, alertHandler, alertMessageHandler}){
+function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageHandler}){
 
     const [editNote, setEditNote] = useState(false);
     const [noteTitle, setNoteTitle] = useState(note.title);
     const [noteSubject, setNoteSubject] = useState(note.subject);
     const [noteBody, setNoteBody] = useState(note.body);
+    const [noteSharedList, setNoteSharedList] = useState(note.shared);
+    const [shareNoteDialog, setShareNoteDialog] = useState(false);
 
 
     const timeConvertor = () => {
@@ -19,11 +22,40 @@ function SimpleNote({note, onModify, alertHandler, alertMessageHandler}){
         return date_arr[2]+" "+ date_arr[1]+", "+date_arr[3];
     }
 
+    const getNoteOwnership = () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let owner = note.owner;
+        if(owner === email){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     const deleteNoteHandler = async () => {
         let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
         let requestOptions = {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json', email: email, password: password}
+        };
+        let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        let responseBody = await response.json();
+        if(response.status === 200){
+            onModify();
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
+        }
+    }
+
+    const shareNoteHandler = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let share_body = {
+            'shared': noteSharedList
+        };
+        let requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json', email: email, password: password},
+            body: JSON.stringify(share_body)
         };
         let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
         let responseBody = await response.json();
@@ -81,8 +113,8 @@ function SimpleNote({note, onModify, alertHandler, alertMessageHandler}){
                         </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                        <IconButton>
-                            <AttachmentIcon color='info'/>
+                        <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!getNoteOwnership()}>
+                            <AttachmentIcon color={getNoteOwnership() ? 'info' : 'disabled'}/>
                         </IconButton>
                     </Grid>
                 </Grid>
@@ -115,8 +147,9 @@ function SimpleNote({note, onModify, alertHandler, alertMessageHandler}){
                         <Button onClick={async () => updateNoteHandler()}>Update</Button>
                     </DialogActions>
                 </Dialog>
-                <IconButton onClick={() => {deleteNoteHandler()}}>
-                    <DeleteIcon color='error'/>
+                <SharedUserList shared={noteSharedList} shareableUserPool={shareableUsers} shareNoteBool={shareNoteDialog} shareNoteBoolHandler={setShareNoteDialog} sharedUserHandler={setNoteSharedList} sharedNoteUpdateHandler={shareNoteHandler}/>
+                <IconButton onClick={() => {deleteNoteHandler()}} disabled={!getNoteOwnership()}>
+                    <DeleteIcon color={getNoteOwnership() ? 'error' : 'disabled'}/>
                 </IconButton>
             </CardActions>
         </Card>

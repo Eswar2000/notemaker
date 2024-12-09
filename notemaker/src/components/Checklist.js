@@ -1,16 +1,49 @@
 import {useState} from 'react';
-import {Card, Box, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, Typography} from '@mui/material';
+import {Card, Box, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, CardActions, Typography} from '@mui/material';
+import AttachmentIcon from '@mui/icons-material/Attachment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import MenuRow from './MenuRow';
+import SharedUserList from './SharedUserList';
 
 
 
-function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
+function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageHandler}) {
     const [checklistItem, setChecklistItem] = useState("");
     const [checklistTitle, setChecklistTitle] =  useState(note.title);
     const [titleEdit, setTitleEdit] = useState(false);
+    const [noteSharedList, setNoteSharedList] = useState(note.shared);
+    const [shareNoteDialog, setShareNoteDialog] = useState(false);
+
+    const getNoteOwnership = () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let owner = note.owner;
+        if(owner === email){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const shareNoteHandler = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let share_body = {
+            'shared': noteSharedList
+        };
+        let requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json', email: email, password: password},
+            body: JSON.stringify(share_body)
+        };
+        let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        let responseBody = await response.json();
+        if(response.status === 200){
+            onModify();
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
+        }
+    }
 
     const updateChecklistHandler = async (type, modifier) => {
         let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
@@ -77,7 +110,7 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
         <Card className='check-list-card'>
             <CardContent>
                 <Grid container spacing={2}>
-                    <Grid item xs={9}>
+                    <Grid item xs={10}>
                         <Typography id='card-head'>
                             {note.title}
                         </Typography>
@@ -95,14 +128,9 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
                             </DialogActions>
                         </Dialog>
                     </Grid>
-                    <Grid item xs={1}>
-                        <IconButton onClick={() => {setTitleEdit(true);}}>
-                            <EditIcon color='success'/>
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <IconButton onClick={() => {deleteChecklistHandler()}}>
-                            <DeleteIcon color='error'/>
+                    <Grid item xs={2}>
+                        <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!getNoteOwnership()}>
+                            <AttachmentIcon color={getNoteOwnership() ? 'info' : 'disabled'}/>
                         </IconButton>
                     </Grid>
                 </Grid>
@@ -132,6 +160,15 @@ function Checklist ({note, onModify, alertHandler, alertMessageHandler}) {
                 })}
 
             </CardContent>
+            <CardActions className='action-menu'>
+                <IconButton onClick={() => {setTitleEdit(true);}}>
+                    <EditIcon color='success'/>
+                </IconButton>
+                <SharedUserList shared={noteSharedList} shareableUserPool={shareableUsers} shareNoteBool={shareNoteDialog} shareNoteBoolHandler={setShareNoteDialog} sharedUserHandler={setNoteSharedList} sharedNoteUpdateHandler={shareNoteHandler}/>
+                <IconButton onClick={() => {deleteChecklistHandler()}} disabled={!getNoteOwnership()}>
+                    <DeleteIcon color={getNoteOwnership() ? 'error' : 'disabled'}/>
+                </IconButton>
+            </CardActions>
         </Card>
     );
 }

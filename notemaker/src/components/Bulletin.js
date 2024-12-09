@@ -9,6 +9,7 @@ import Checklist from './Checklist';
 function Bulletin({alertHandler, alertMessageHandler}){
 
     const [notes, setNotes] = useState([]);
+    const [userList, setUserList] = useState({});
 
 
     const getNotes = async () => {
@@ -17,15 +18,37 @@ function Bulletin({alertHandler, alertMessageHandler}){
             method: 'GET',
             headers: {'Content-Type': 'application/json', email: email, password: password}
         };
-        let response = await fetch('http://localhost:3001/note', requestOptions);
+        let response = await fetch('http://localhost:3001/all-notes', requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
             setNotes(responseBody['notes']);
         }
     }
 
+    const getShareableUsers = async () => {
+        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let userInfo = {};
+        let requestOptions = {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json', email: email, password: password}
+        };
+        let response = await fetch('http://localhost:3001/share-user', requestOptions);
+        let responseBody = await response.json();
+        if(response.status === 200){
+            responseBody['users'].forEach((elem) => {
+                // This is my new statement
+                userInfo[elem.email] = {'name': elem.name, 'id': elem._id};
+
+                // THis is the original statement
+                // userInfo[elem.name] = elem._id;
+            })
+            setUserList(userInfo);
+        }
+    }
+
     useEffect(() => {
         getNotes();
+        getShareableUsers();
     },[])
 
 
@@ -35,7 +58,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
                 <Grid container spacing={2}>
                     {notes && notes.map((note,index)=>{
                         if(note.type==='default'){
-                            return <Grid item xs={4} key={index}><SimpleNote note={note} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler}/></Grid>
+                            return <Grid item xs={4} key={index}><SimpleNote note={note} shareableUsers={userList} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler}/></Grid>
                         } else {
                             return null;
                         }
@@ -45,7 +68,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
                 <Grid container spacing={2}>
                     {notes && notes.map((note,index)=>{
                         if(note.type==='list'){
-                            return <Grid item xs={4} key={index}><Checklist note={note} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
+                            return <Grid item xs={4} key={index}><Checklist note={note} shareableUsers={userList} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
                         } else {
                             return null;
                         }
