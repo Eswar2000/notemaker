@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bcryptjs = require('bcryptjs');
 
 
 //Middleware functionalities
