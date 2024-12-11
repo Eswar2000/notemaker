@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import jwt_decode from 'jwt-decode';
 import FaceIcon from '@mui/icons-material/Face';
 import {blue} from '@mui/material/colors';
 import {Link, useNavigate} from 'react-router-dom';
@@ -23,7 +24,11 @@ function Login() {
             let response = await fetch('http://localhost:3001/login', requestOptions);
             let responseBody = await response.json();
             if (response.status === 200) {
-                sessionStorage.setItem('Auth_Token', responseBody.token);
+                let auth_token = responseBody.jwt;
+                let decoded_user_info = jwt_decode(auth_token);
+                sessionStorage.setItem('User_Email', decoded_user_info.email);
+                sessionStorage.setItem('User_Name', decoded_user_info.name);
+                sessionStorage.setItem('Auth_Token', auth_token);
                 navigate('/home');
             } else {
                 setAlertFlag(-1);

@@ -23,7 +23,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const getNoteOwnership = () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let email = sessionStorage.getItem('User_Email');
         let owner = note.owner;
         if(owner === email){
             return true;
@@ -33,10 +33,10 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const deleteNoteHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json', email: email, password: password}
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
         let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
         let responseBody = await response.json();
@@ -48,13 +48,13 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const shareNoteHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let share_body = {
             'shared': noteSharedList
         };
         let requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json', email: email, password: password},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify(share_body)
         };
         let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
@@ -67,7 +67,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const updateNoteHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let temp = {};
         if(noteTitle.length !==0 && noteTitle !== note.title){
             temp['title'] = noteTitle;
@@ -82,7 +82,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
         if(Object.keys(temp).length!==0){
             let requestOptions = {
                 method: 'PUT',
-                headers: {'Content-Type': 'application/json', email: email, password: password},
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
                 body: JSON.stringify(temp)
             };
             let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);

@@ -3,13 +3,28 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const cookieparser = require('cookie-parser');
 
 
 //Middleware functionalities
 const app = express()
 app.use(cors());
+// app.use(
+//     cors({
+//         origin: 'http://localhost:3000', // Allow the frontend origin
+//         credentials: true,              // Allow cookies and credentials
+//     })
+// );
+
+// app.options('*', cors({
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+// }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieparser());
 
 
 //Importing models
@@ -23,6 +38,41 @@ mongoose.connect(dbURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+
+// Support Functions - Later moved to middlewares or services
+const createAuthToken = (user) => {
+    const payload = {
+        email: user.email,
+        name: user.name
+    };
+
+    let jwt_token = jwt.sign(payload, 'my-secret-key', {expiresIn: '1h'});
+    return jwt_token;
+}
+
+const authenticateUser = (req, res, next) => {
+    const auth_token = req.headers["authorization"]?.split(' ')[1];
+    if(!auth_token){
+        res.statusCode = 401;
+        res.json({
+            "status": "Unauthorized user activity found!",
+        });
+        return;
+    }
+
+    jwt.verify(auth_token, 'my-secret-key', (err, decoded) => {
+        if(err) {
+            res.statusCode = 403;
+            res.json({
+                "status": "Invalid user credentials used!",
+            });
+            return;
+        }
+
+        req.user = decoded;
+        next();
+    })
+}
 
 
 //Route handling
@@ -39,7 +89,10 @@ app.post('/register', (req, res) => {
     User.findOne({email: req.body.email}).then(async (user) => {
         try {
             if(!user){
-                let new_user = new User(req.body);
+                let {name, phone, email, password} = req.body;
+                let hashed_pass = await bcryptjs.hash(password, 10);
+                
+                let new_user = new User({name, phone, email, password: hashed_pass});
                 new_user.save();
                 res.statusCode = 404;
                 res.json({
@@ -73,11 +126,13 @@ app.post('/login', (req, res) => {
                 });
                 return;
             } else {
-                if(user.password === req.body.password){
+                let credential_match = await bcryptjs.compare(req.body.password, user.password);
+                if(credential_match){
+                    let token = createAuthToken(user);
                     res.statusCode = 200;
                     res.json({
                         status: "Login Successful",
-                        token: user.email+"-"+user.password
+                        jwt: token
                     });
                 } else {
                     res.statusCode = 401;
@@ -97,17 +152,10 @@ app.post('/login', (req, res) => {
 });
 
 //Route to fetch all users except the one in the headers
-app.get('/share-user', (req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        if(user && user.password === req.headers['password']){
-            User.find({$and: [{email: {$ne: req.headers['email']}}, {name: {$ne: 'admin'}}]}).select({name: 1, email: 1, _id: 1}).then(async (userlist) => {
+app.get('/share-user', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
+            User.find({$and: [{email: {$ne: req.user.email}}, {name: {$ne: 'admin'}}]}).select({name: 1, email: 1, _id: 1}).then(async (userlist) => {
                 if(userlist && userlist.length !== 0){
                     res.statusCode = 200;
                     res.json({
@@ -121,25 +169,19 @@ app.get('/share-user', (req, res) => {
                 }
             })
         } else {
-            res.statusCode = 401;
+            res.statusCode = 400;
             res.json({
-                status: "Unauthorized activity to get other user details"
+                status: "No such user found"
             });
         }
     })
 })
 
-app.get('/all-notes', (req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        if(user && user.password === req.headers['password']){
-            Note.find({$or: [{'owner': req.headers['email']}, {shared: {$in: [req.headers['email']]}}]}).then(async (notes) => {
+//Route to fetch all notes (owned or being shared with)
+app.get('/all-notes', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
+            Note.find({$or: [{'owner': req.user.email}, {shared: {$in: [req.user.email]}}]}).then(async (notes) => {
                 if(notes.length !== 0){
                     res.statusCode = 200;
                     res.json({
@@ -154,31 +196,23 @@ app.get('/all-notes', (req, res) => {
                 }
             });
         } else {
-            res.statusCode = 401;
+            res.statusCode = 400;
             res.json({
-                status: "Unauthorized activity to get notes"
+                status: "No such user found"
             });
         }
         
     });
 })
 
-//Route to fetch all notes
-app.get('/note', (req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        if(user && user.password === req.headers['password']){
-            Note.find({owner: req.headers['email']}).then(async (notes) => {
+//Route to fetch only owned notes
+app.get('/note', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
+            Note.find({owner: req.user.email}).then(async (notes) => {
                 if(notes.length !== 0){
                     res.statusCode = 200;
                     res.json({
-                        // status: "Notes retreived",
                         notes: notes
                     });
                     return;
@@ -190,9 +224,9 @@ app.get('/note', (req, res) => {
                 }
             });
         } else {
-            res.statusCode = 401;
+            res.statusCode = 400;
             res.json({
-                status: "Unauthorized activity to get notes"
+                status: "No such user found"
             });
         }
         
@@ -200,18 +234,11 @@ app.get('/note', (req, res) => {
 });
 
 //Route to delete a note by its ID
-app.delete('/note/:id', (req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        if(user && user.password === req.headers['password']){
+app.delete('/note/:id', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
             let note_id = new mongoose.Types.ObjectId(req.params.id);
-            Note.findOneAndDelete({owner: req.headers['email'], _id: note_id}, (err, note) => {
+            Note.findOneAndDelete({owner: req.user.email, _id: note_id}, (err, note) => {
                 if(err){
                     res.statusCode = 500;
                     res.json({
@@ -231,9 +258,9 @@ app.delete('/note/:id', (req, res) => {
                 }
             });
         } else {
-            res.statusCode = 401;
+            res.statusCode = 400;
             res.json({
-                status: "Unauthorized activity to delete notes"
+                status: "No such user found"
             });
         }
         
@@ -241,16 +268,9 @@ app.delete('/note/:id', (req, res) => {
 });
 
 //Route to update a note by its ID
-app.put('/note/:id', (req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        if(user && user.password === req.headers['password']){
+app.put('/note/:id', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
             let note_id = new mongoose.Types.ObjectId(req.params.id);
             Note.findByIdAndUpdate(note_id, req.body , (err, note) => {
                 if(err){
@@ -272,9 +292,9 @@ app.put('/note/:id', (req, res) => {
                 }
             });
         } else {
-            res.statusCode = 401;
+            res.statusCode = 400;
             res.json({
-                status: "Unauthorized activity to update notes"
+                status: "No such user found"
             });
         }
         
@@ -283,47 +303,33 @@ app.put('/note/:id', (req, res) => {
 
 
 //Route to add a simple note
-app.post('/note',(req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        try {
-            if(user.password===req.headers['password']){
-                let newNote = {
-                    type: req.body.type,
-                    title: req.body.title,
-                    owner: req.headers['email'],
-                    shared: [],
-                };
+app.post('/note', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
+            let newNote = {
+                type: req.body.type,
+                title: req.body.title,
+                owner: req.user.email,
+                shared: [],
+            };
 
-                if(req.body.type === 'default'){
-                    newNote['subject'] = req.body.subject;
-                    newNote['body'] = req.body.body;
-                }
-                
-                Note.create(newNote).then(() => {
-                    res.statusCode = 200;
-                    res.json({
-                        status: "Note added successfully",
-                    });
-                }, (err) => {
-                    res.statusCode = 500;
-                    res.json({
-                        status: "Internal server error",
-                    });
-                });
-            } else {
-                res.statusCode = 403;
-                res.json({
-                    status: "Unauthorized attempt to create a note",
-                });
+            if(req.body.type === 'default'){
+                newNote['subject'] = req.body.subject;
+                newNote['body'] = req.body.body;
             }
-        } catch(err){
+            
+            Note.create(newNote).then(() => {
+                res.statusCode = 200;
+                res.json({
+                    status: "Note added successfully",
+                });
+            }, (err) => {
+                res.statusCode = 500;
+                res.json({
+                    status: "Internal server error",
+                });
+            });
+        } else {
             res.statusCode = 404;
             res.json({
                 status: 'User not found',
@@ -333,16 +339,9 @@ app.post('/note',(req, res) => {
 });
 
 //Route to update a checklist by its ID
-app.put('/checklist/:id', (req, res) => {
-    if(typeof req.headers['email']==='undefined' || typeof req.headers['password']==='undefined'){
-        res.statusCode = 400;
-        res.json({
-            status: "Bad Request",
-        });
-        return;
-    }
-    User.findOne({email: req.headers['email']}).then(async (user) => {
-        if(user && user.password === req.headers['password']){
+app.put('/checklist/:id', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
             let note_id = new mongoose.Types.ObjectId(req.params.id);
             if(req.body.action==='general'){
                 Note.findByIdAndUpdate(note_id, {"title":req.body.title} , (err, note) => {
@@ -443,9 +442,9 @@ app.put('/checklist/:id', (req, res) => {
             }
             
         } else {
-            res.statusCode = 401;
+            res.statusCode = 400;
             res.json({
-                status: "Unauthorized activity to update notes"
+                status: "No such user found"
             });
         }
         
