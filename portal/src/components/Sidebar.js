@@ -15,10 +15,10 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
     const [addChecklist, setAddChecklist] = useState(false);
     
     const checklistHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', email: email, password: password},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify({type:'list',title: checklistTitle})
         };
         let response = await fetch('http://localhost:3001/note', requestOptions);
@@ -32,10 +32,10 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
     }
 
     const simpleNoteHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', email: email, password: password},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify({type:'default',title: noteTitle, subject: noteSubject, body: noteBody})
         };
         let response = await fetch('http://localhost:3001/note', requestOptions);

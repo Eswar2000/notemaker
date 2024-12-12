@@ -17,7 +17,7 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
     const [shareNoteDialog, setShareNoteDialog] = useState(false);
 
     const getNoteOwnership = () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let email = sessionStorage.getItem('User_Email');
         let owner = note.owner;
         if(owner === email){
             return true;
@@ -27,13 +27,13 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const shareNoteHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let share_body = {
             'shared': noteSharedList
         };
         let requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json', email: email, password: password},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify(share_body)
         };
         let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
@@ -46,7 +46,7 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const updateChecklistHandler = async (type, modifier) => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let temp = {};
         if(type==="general" && modifier.length!==0){
             temp['action'] = type;
@@ -72,7 +72,7 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
         }
         let requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json', email: email, password: password},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify(temp)
         };
         let response = await fetch('http://localhost:3001/checklist/'+note._id, requestOptions);
@@ -91,10 +91,10 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     const deleteChecklistHandler = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json', email: email, password: password}
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
         let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
         let responseBody = await response.json();

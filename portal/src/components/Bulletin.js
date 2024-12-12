@@ -13,10 +13,10 @@ function Bulletin({alertHandler, alertMessageHandler}){
 
 
     const getNotes = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
             method: 'GET',
-            headers: {'Content-Type': 'application/json', email: email, password: password}
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
         let response = await fetch('http://localhost:3001/all-notes', requestOptions);
         let responseBody = await response.json();
@@ -26,21 +26,17 @@ function Bulletin({alertHandler, alertMessageHandler}){
     }
 
     const getShareableUsers = async () => {
-        let [email, password] = sessionStorage.getItem('Auth_Token').split("-");
+        let auth_token = sessionStorage.getItem('Auth_Token');
         let userInfo = {};
         let requestOptions = {
             method: 'GET',
-            headers: {'Content-Type': 'application/json', email: email, password: password}
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
         let response = await fetch('http://localhost:3001/share-user', requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
             responseBody['users'].forEach((elem) => {
-                // This is my new statement
                 userInfo[elem.email] = {'name': elem.name, 'id': elem._id};
-
-                // THis is the original statement
-                // userInfo[elem.name] = elem._id;
             })
             setUserList(userInfo);
         }

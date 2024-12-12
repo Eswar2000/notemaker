@@ -2,7 +2,7 @@ import {useState} from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import {blue} from '@mui/material/colors';
 import Alert from '@mui/material/Alert';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {Avatar, Box, Button, Container, TextField, Typography} from '@mui/material';
 
 
@@ -16,6 +16,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [alertFlag, setAlertFlag] = useState(0);
     const [alertMessage, setAlertMessage] = useState("");
+    const navigate = useNavigate();
 
     const SubmitHandler = async () => {
         if(password===confirmPassword){
@@ -26,9 +27,12 @@ function Register() {
             };
             let response = await fetch('http://localhost:3001/register', requestOptions);
             let responseBody = await response.json();
-            if (response.status === 404) {
+            if (response.status === 200) {
                 setAlertFlag(1);
                 setAlertMessage(responseBody.status);
+                setTimeout(() => {
+                    navigate('/signin');
+                }, 3000);
             } else {
                 setAlertFlag(-1);
                 setAlertMessage(responseBody.status);
