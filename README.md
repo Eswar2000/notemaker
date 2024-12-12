@@ -4,6 +4,7 @@ A simple note making application built with MERN stack (MongoDB, Express.js, Rea
 
 ## Features
 
+- **Authentication and Authorization**: Use of jsonwebtoken and bcryptjs to securely manage user access
 - **Create Notes and Checklists**: Add new notes or to-do lists
 - **Edit Notes and Checklists**: Edit existing notes and to-do lists on the fly
 - **Delete Notes and Checklists**: Delete unwanted or outdated notes and to-do lists
@@ -32,12 +33,13 @@ git clone https://github.com/Eswar2000/notemaker.git
 
 ### 2. Install backend dependencies
 ```bash
+cd backend
 npm install
 ```
 
 ### 3. Install frontend dependencies
 ```bash
-cd notemaker
+cd portal
 npm install
 ```
 
@@ -57,7 +59,6 @@ Visit http://localhost:3000/signin to login as an user and start working on mana
 
 ## Roadmap (or let's say, just thinking out aloud)
 
-- **JWT based authentication**: Rework of authentication module with **jsonwebtoken** package supported by **bcryptjs** package for hashing credentials before storing in datastore
 - **Code refactor**: Work on the internal structure of codebase and accommadate best practices in coding (an ongoing task)
 - **Management of secrets**: Like notes and checklists, include a module to manage secrets effectively
 - **Import/Export of Notes and Checklists**: Support for users to download their notes as a standard format and upload notes in bulk from a standard file format
