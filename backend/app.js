@@ -10,18 +10,6 @@ const cookieparser = require('cookie-parser');
 //Middleware functionalities
 const app = express()
 app.use(cors());
-// app.use(
-//     cors({
-//         origin: 'http://localhost:3000', // Allow the frontend origin
-//         credentials: true,              // Allow cookies and credentials
-//     })
-// );
-
-// app.options('*', cors({
-//     origin: 'http://localhost:3000',
-//     credentials: true,
-// }));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieparser());
@@ -94,12 +82,12 @@ app.post('/register', (req, res) => {
                 
                 let new_user = new User({name, phone, email, password: hashed_pass});
                 new_user.save();
-                res.statusCode = 404;
+                res.statusCode = 200;
                 res.json({
                     "status": "User Created",
                 });
             } else {
-                res.statusCode = 200;
+                res.statusCode = 400;
                 res.json({
                     "status": "User already exists",
                 });
