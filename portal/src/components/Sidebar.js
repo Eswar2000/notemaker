@@ -59,7 +59,7 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
                             <NoteAdd fontSize='medium' />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary='Add Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Create a new note' />
+                    <ListItemText primary='Add Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Capture your thoughts at an instance' />
                 </ListItem>
                 <ListItem className='list-item' onClick={() => {setAddChecklist(true);}}>
                     <ListItemAvatar>
@@ -67,7 +67,7 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
                             <Edit fontSize='medium' />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary='Add checklist' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Create a checklist'/>
+                    <ListItemText primary='Add checklist' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Stay on track with your to-dos!'/>
                 </ListItem>
                 <ListItem className='list-item'>
                     <ListItemAvatar>
