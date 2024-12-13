@@ -42,13 +42,26 @@ npm install
 cd portal
 npm install
 ```
+### 4. Update your environments for portal
+```bash
+cd portal
+cp .env.sample .env
+```
+Update the .env file by modifying the placeholders with your actual instance entries
 
-### 4. Start backend
+### 5. Update your environments for backend
+```bash
+cd backend
+cp .env.sample .env
+```
+Update the .env file by modifying the placeholders with your actual instance entries
+
+### 6. Start backend
 ```bash
 npm start
 ```
 
-### 5. Start frontend
+### 7. Start frontend
 ```bash
 cd notemaker
 npm start
