@@ -1,4 +1,5 @@
 // Importing packages
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -19,13 +20,24 @@ app.use(cookieparser());
 const User = require('./models/UserSchema');
 const Note = require('./models/NoteSchema');
 
-//Database Connectivity
-const dbURL = 'mongodb://localhost:27017/notemaker';
 
+//Initialize essential variables
+BACKEND_PORT = parseInt(process.env.BACKEND_PORT, 10);
+MONGO_HOST = process.env.MONGO_HOST;
+MONGO_PORT = process.env.MONGO_PORT;
+MONGO_DB = process.env.MONGO_DB;
+JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+HASH_SALT_ROUNDS = parseInt(process.env.HASH_SALT_ROUNDS);
+JWT_TOKEN_EXPIRY = process.env.JWT_TOKEN_EXPIRY;
+
+
+//Database connectivity
+const dbURL = 'mongodb://' + MONGO_HOST + ':' + MONGO_PORT + '/' + MONGO_DB;
 mongoose.connect(dbURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+
 
 // Support Functions - Later moved to middlewares or services
 const createAuthToken = (user) => {
@@ -34,7 +46,7 @@ const createAuthToken = (user) => {
         name: user.name
     };
 
-    let jwt_token = jwt.sign(payload, 'my-secret-key', {expiresIn: '1h'});
+    let jwt_token = jwt.sign(payload, JWT_SECRET_KEY, {expiresIn: JWT_TOKEN_EXPIRY});
     return jwt_token;
 }
 
@@ -48,7 +60,7 @@ const authenticateUser = (req, res, next) => {
         return;
     }
 
-    jwt.verify(auth_token, 'my-secret-key', (err, decoded) => {
+    jwt.verify(auth_token, JWT_SECRET_KEY, (err, decoded) => {
         if(err) {
             res.statusCode = 403;
             res.json({
@@ -63,22 +75,13 @@ const authenticateUser = (req, res, next) => {
 }
 
 
-//Route handling
-app.get('/', (req, res) => {
-    res.send("<h2>Server running successfully</h2>");
-});
-
-app.post('/temp', (req, res) => {
-    console.log("NodeJS and ReactJS are connected successfully");
-});
-
 // Route for registering new user
 app.post('/register', (req, res) => {
     User.findOne({email: req.body.email}).then(async (user) => {
         try {
             if(!user){
                 let {name, phone, email, password} = req.body;
-                let hashed_pass = await bcryptjs.hash(password, 10);
+                let hashed_pass = await bcryptjs.hash(password, HASH_SALT_ROUNDS);
                 
                 let new_user = new User({name, phone, email, password: hashed_pass});
                 new_user.save();
@@ -102,6 +105,7 @@ app.post('/register', (req, res) => {
     });
 
 });
+
 
 //Route for login into user's dashboard
 app.post('/login', (req, res) => {
@@ -139,6 +143,7 @@ app.post('/login', (req, res) => {
     });
 });
 
+
 //Route to fetch all users except the one in the headers
 app.get('/share-user', authenticateUser, (req, res) => {
     User.findOne({email: req.user.email}).then(async (user) => {
@@ -163,7 +168,8 @@ app.get('/share-user', authenticateUser, (req, res) => {
             });
         }
     })
-})
+});
+
 
 //Route to fetch all notes (owned or being shared with)
 app.get('/all-notes', authenticateUser, (req, res) => {
@@ -191,7 +197,8 @@ app.get('/all-notes', authenticateUser, (req, res) => {
         }
         
     });
-})
+});
+
 
 //Route to fetch only owned notes
 app.get('/note', authenticateUser, (req, res) => {
@@ -220,6 +227,7 @@ app.get('/note', authenticateUser, (req, res) => {
         
     });
 });
+
 
 //Route to delete a note by its ID
 app.delete('/note/:id', authenticateUser, (req, res) => {
@@ -254,6 +262,7 @@ app.delete('/note/:id', authenticateUser, (req, res) => {
         
     });
 });
+
 
 //Route to update a note by its ID
 app.put('/note/:id', authenticateUser, (req, res) => {
@@ -325,6 +334,7 @@ app.post('/note', authenticateUser, (req, res) => {
         }
     });
 });
+
 
 //Route to update a checklist by its ID
 app.put('/checklist/:id', authenticateUser, (req, res) => {
@@ -439,4 +449,4 @@ app.put('/checklist/:id', authenticateUser, (req, res) => {
     });
 });
 
-app.listen(3001);
+app.listen(BACKEND_PORT);
