@@ -25,7 +25,7 @@ function Register() {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({name: name, phone: phone, email: email, password: password})
             };
-            let response = await fetch('http://localhost:3001/register', requestOptions);
+            let response = await fetch(process.env.REACT_APP_API_URL + '/register', requestOptions);
             let responseBody = await response.json();
             if (response.status === 200) {
                 setAlertFlag(1);

@@ -21,7 +21,7 @@ function Login() {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({email: email, password: password})
             };
-            let response = await fetch('http://localhost:3001/login', requestOptions);
+            let response = await fetch(process.env.REACT_APP_API_URL + '/login', requestOptions);
             let responseBody = await response.json();
             if (response.status === 200) {
                 let auth_token = responseBody.jwt;

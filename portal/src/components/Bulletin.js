@@ -19,7 +19,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
             method: 'GET',
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
-        let response = await fetch('http://localhost:3001/all-notes', requestOptions);
+        let response = await fetch(process.env.REACT_APP_API_URL + '/all-notes', requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
             setNotes(responseBody['notes']);
@@ -35,7 +35,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
             method: 'GET',
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
-        let response = await fetch('http://localhost:3001/share-user', requestOptions);
+        let response = await fetch(process.env.REACT_APP_API_URL + '/share-user', requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
             responseBody['users'].forEach((elem) => {

@@ -38,7 +38,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
             method: 'DELETE',
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
         };
-        let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        let response = await fetch(process.env.REACT_APP_API_URL + '/note/'+note._id, requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
             onModify();
@@ -57,7 +57,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify(share_body)
         };
-        let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+        let response = await fetch(process.env.REACT_APP_API_URL + '/note/'+note._id, requestOptions);
         let responseBody = await response.json();
         if(response.status === 200){
             onModify();
@@ -85,7 +85,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                 headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
                 body: JSON.stringify(temp)
             };
-            let response = await fetch('http://localhost:3001/note/'+note._id, requestOptions);
+            let response = await fetch(process.env.REACT_APP_API_URL + '/note/'+note._id, requestOptions);
             let responseBody = await response.json();
             if(response.status === 200){
                 onModify();

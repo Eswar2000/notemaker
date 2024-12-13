@@ -21,7 +21,7 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify({type:'list',title: checklistTitle})
         };
-        let response = await fetch('http://localhost:3001/note', requestOptions);
+        let response = await fetch(process.env.REACT_APP_API_URL + '/note', requestOptions);
         let responseBody = await response.json();
         setAddChecklist(false);
         if(response.status === 200){
@@ -38,7 +38,7 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
             body: JSON.stringify({type:'default',title: noteTitle, subject: noteSubject, body: noteBody})
         };
-        let response = await fetch('http://localhost:3001/note', requestOptions);
+        let response = await fetch(process.env.REACT_APP_API_URL + '/note', requestOptions);
         let responseBody = await response.json();
         setAddNote(false);
         if(response.status === 200){
