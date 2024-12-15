@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Card, Button, TextField, Grid, Box, Divider, IconButton, CardContent, CardActions, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import {Card, Button, Container, TextField, Grid, Box, Divider, IconButton, CardContent, CardActions, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -102,8 +102,8 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
 
     return (
         <Card className='simple-note-card'>
-            <CardContent>
-                <Grid container spacing={2}>
+            <CardContent className='simple-note-card-content'>
+                <Grid container spacing={3}>
                     <Grid item xs={10}>
                         <Typography id='card-head'>
                             {note.title}
@@ -112,21 +112,23 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                             Updated On {timeConvertor()}
                         </Typography>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={1}>
                         <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!getNoteOwnership()}>
                             <AttachmentIcon color={getNoteOwnership() ? 'info' : 'disabled'}/>
                         </IconButton>
                     </Grid>
                 </Grid>
-                <Box height={8}/>
-                <Divider variant='inset'/>
-                <Box height={8}/>
-                <Typography id='card-sub'>
-                    {note.subject}
-                </Typography>
-                <Typography component='p' variant='body2'>
-                    {note.body}
-                </Typography>
+                <Container disableGutters className='simple-note-card-body'>
+                    <Box height={8}/>
+                    <Divider variant='inset'/>
+                    <Box height={8}/>
+                    <Typography id='card-sub'>
+                        {note.subject}
+                    </Typography>
+                    <Typography component='p' variant='body2'>
+                        {note.body}
+                    </Typography>
+                </Container>
             </CardContent>
             <CardActions className='action-menu'>
                 <IconButton onClick={() => {setEditNote(true);}}>

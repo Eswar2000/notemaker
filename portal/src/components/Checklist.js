@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Card, Box, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, CardActions, Typography} from '@mui/material';
+import {Card, Container, Button, TextField, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, CardContent, CardActions, Typography} from '@mui/material';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -108,33 +108,19 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
 
     return (
         <Card className='check-list-card'>
-            <CardContent>
-                <Grid container spacing={2}>
+            <CardContent className='check-list-card-content'>
+                <Grid container spacing={3}>
                     <Grid item xs={10}>
                         <Typography id='card-head'>
                             {note.title}
                         </Typography>
-                        <Dialog open={titleEdit} onClose={() => {setTitleEdit(false);}}>
-                            <DialogTitle>Edit Checklist</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText>
-                                    Update checklist title and submit. Make sure that the field is not left empty.
-                                </DialogContentText>
-                                <TextField margin="dense" id="title" label="Note Title" value={checklistTitle} onChange={event => {setChecklistTitle(event.target.value)}} fullWidth />
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={() => {setTitleEdit(false);}}>Cancel</Button>
-                                <Button onClick={async () => {updateChecklistHandler("general", checklistTitle);}}>Update</Button>
-                            </DialogActions>
-                        </Dialog>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={1}>
                         <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!getNoteOwnership()}>
                             <AttachmentIcon color={getNoteOwnership() ? 'info' : 'disabled'}/>
                         </IconButton>
                     </Grid>
                 </Grid>
-                <Box height={8} />
                 <TextField
                     label="Add Item"
                     size='small'
@@ -151,14 +137,15 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
                     onChange={event => {setChecklistItem(event.target.value)}}
                     fullWidth
                 />
-                {note.menu && note['menu'].map((element,index)=>{
-                    return <MenuRow element={element} key={index} pos={index} checked={false} toggle={updateChecklistHandler}/>
-                })}
-                {note["menu"].length!==0 && note["menuChecked"].length!==0 && <Divider variant='middle' />}
-                {note.menuChecked && note['menuChecked'].map((element,index)=>{
-                    return <MenuRow element={element} key={index} pos={index} checked={true} toggle={updateChecklistHandler}/>
-                })}
-
+                <Container disableGutters className='check-list-card-body'>
+                    {note.menu && note['menu'].map((element,index)=>{
+                        return <MenuRow element={element} key={index} pos={index} checked={false} toggle={updateChecklistHandler}/>
+                    })}
+                    {note["menu"].length!==0 && note["menuChecked"].length!==0 && <Divider variant='middle' />}
+                    {note.menuChecked && note['menuChecked'].map((element,index)=>{
+                        return <MenuRow element={element} key={index} pos={index} checked={true} toggle={updateChecklistHandler}/>
+                    })}
+                </Container>
             </CardContent>
             <CardActions className='action-menu'>
                 <IconButton onClick={() => {setTitleEdit(true);}}>
@@ -168,6 +155,19 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
                 <IconButton onClick={() => {deleteChecklistHandler()}} disabled={!getNoteOwnership()}>
                     <DeleteIcon color={getNoteOwnership() ? 'error' : 'disabled'}/>
                 </IconButton>
+                <Dialog open={titleEdit} onClose={() => {setTitleEdit(false);}}>
+                    <DialogTitle>Edit Checklist</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Update checklist title and submit. Make sure that the field is not left empty.
+                        </DialogContentText>
+                        <TextField margin="dense" id="title" label="Note Title" value={checklistTitle} onChange={event => {setChecklistTitle(event.target.value)}} fullWidth />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {setTitleEdit(false);}}>Cancel</Button>
+                        <Button onClick={async () => {updateChecklistHandler("general", checklistTitle);}}>Update</Button>
+                    </DialogActions>
+                </Dialog>
             </CardActions>
         </Card>
     );

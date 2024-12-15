@@ -76,29 +76,43 @@
 	background-color: #f5f5f5;
 }
 
+/* Stylings for simple note */
+
 .simple-note-card {
+	display: flex;
+	flex-direction: column;
 	min-width: 300px;
-	min-height: 200px;
 	margin: auto;
+}
+
+.simple-note-card-content {
+	height: 200px;
+}
+
+.simple-note-card-body {
+	height: 120px;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
 #card-head {
 	font-weight: 700;
-	font-size: 26px;
+	font-size: 25px;
 	font-family: "Audiowide", sans-serif;
 	text-transform: capitalize;
 }
 
 #card-time {
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #card-sub {
 	font-weight: 500;
-	font-size: 20px;
+	font-size: 18px;
 	font-family: "Audiowide", sans-serif;
 	text-transform: capitalize;
+	margin-bottom: 4px;
 }
 
 .action-menu {
@@ -106,10 +120,21 @@
 	justify-content: space-between;
 }
 
+/* Styling for check-lists */
+
 .check-list-card {
 	min-width: 300px;
-	min-height: 350px;
 	margin: auto;
+}
+
+.check-list-card-content {
+	height: 225px;
+}
+
+.check-list-card-body {
+	height: 165px;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
 #checklist-row {
@@ -137,6 +162,8 @@
 	font-weight: 500;
 	font-family: "Audiowide", sans-serif;
 }
+
+/* Styling for no data screen */
 
 #no-data-banner {
 	width: 100%;
