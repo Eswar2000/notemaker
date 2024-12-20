@@ -118,9 +118,9 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                         </IconButton>
                     </Grid>
                 </Grid>
+                <Box height={8}/>
+                <Divider variant='inset'/>
                 <Container disableGutters className='simple-note-card-body'>
-                    <Box height={8}/>
-                    <Divider variant='inset'/>
                     <Box height={8}/>
                     <Typography id='card-sub'>
                         {note.subject}
