@@ -54,7 +54,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
 
 
     return (
-        <Grid id={'dashboard-content'} container spacing={4}>
+        <Grid id='dashboard-content' container spacing={4}>
             {
                 (notes && notes.length > 0) && <Grid item xs={9}>
                     <Grid container spacing={2}>
