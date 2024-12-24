@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const noteSchema = new Schema({
     type: {
         type: String,
-        enum: ['default', 'list'],
+        enum: ['default', 'list', 'ordered-list'],
         required: true
     },
     title: {
@@ -22,6 +22,9 @@ const noteSchema = new Schema({
         type: [String],
     },
     menuChecked: {
+        type: [String],
+    },
+    orderedList: {
         type: [String],
     },
     owner: {

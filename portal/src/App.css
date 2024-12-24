@@ -134,7 +134,7 @@
 }
 
 .check-list-card-body {
-	height: 165px;
+	height: 150px;
 	overflow-y: scroll;
 	scrollbar-width: none;
 }
@@ -178,4 +178,30 @@
 	color: #FDB8F7;
 	text-align: center;
 	margin: 0 100px;
+}
+
+
+.ordered-list-card {
+	min-width: 300px;
+	margin: auto;
+}
+
+.ordered-list-card-content {
+	height: 225px;
+}
+
+.ordered-list-card-body {
+	height: 165px;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.ordered-list-item {
+	background-color: #f9f9f9;
+	margin: 5px;
+	border-radius: 16px;
+}
+
+.note-header {
+	margin: 4px;
 }

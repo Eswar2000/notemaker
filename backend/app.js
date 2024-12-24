@@ -299,7 +299,7 @@ app.put('/note/:id', authenticateUser, (req, res) => {
 });
 
 
-//Route to add a simple note
+//Route to add a simple note, checklist or orderedlist
 app.post('/note', authenticateUser, (req, res) => {
     User.findOne({email: req.user.email}).then(async (user) => {
         if(user){
@@ -313,6 +313,10 @@ app.post('/note', authenticateUser, (req, res) => {
             if(req.body.type === 'default'){
                 newNote['subject'] = req.body.subject;
                 newNote['body'] = req.body.body;
+            }
+
+            if(req.body.type === 'ordered-list'){
+                newNote['orderedList'] = [];
             }
             
             Note.create(newNote).then(() => {
