@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Grid, IconButton, Typography} from '@mui/material';
-import AttachmentIcon from '@mui/icons-material/Attachment';
+import ShareIcon from '@mui/icons-material/Share';
 import SharedUserList from './SharedUserList';
 import OwnershipService from '../services/OwnershipService';
 
@@ -50,7 +50,7 @@ function NoteHeader({note, shareableUsers, onModify, alertHandler, alertMessageH
             </Grid>
             <Grid item xs={1}>
                 <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!OwnershipService.getNoteOwnership(note.owner)}>
-                    <AttachmentIcon color={OwnershipService.getNoteOwnership(note.owner) ? 'info' : 'disabled'}/>
+                    <ShareIcon color={OwnershipService.getNoteOwnership(note.owner) ? 'info' : 'disabled'}/>
                 </IconButton>
             </Grid>
             <SharedUserList shared={noteSharedList} shareableUserPool={shareableUsers} shareNoteBool={shareNoteDialog} shareNoteBoolHandler={setShareNoteDialog} sharedUserHandler={setNoteSharedList} sharedNoteUpdateHandler={shareNoteHandler}/>

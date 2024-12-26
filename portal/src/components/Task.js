@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-function Task({id, task}) {
+function Task({id, task, pos, deleteTask}) {
 
     const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id});
     const style = {
@@ -19,7 +19,7 @@ function Task({id, task}) {
             {...listeners} 
             style={style}
             secondaryAction={
-            <IconButton edge="end" aria-label="delete">
+            <IconButton edge="end" aria-label="delete" onClick={async () => {deleteTask("erase", pos);}} onPointerDown={(event) => {event.stopPropagation();}}>
                 <HighlightOffIcon color='error' />
             </IconButton>
             }>

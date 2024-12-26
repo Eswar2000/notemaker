@@ -191,7 +191,7 @@
 }
 
 .ordered-list-card-body {
-	height: 165px;
+	height: 150px;
 	overflow-y: scroll;
 	scrollbar-width: none;
 }

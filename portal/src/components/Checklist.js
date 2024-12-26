@@ -86,8 +86,8 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
                     InputProps={{
                     endAdornment: (
                         <InputAdornment position='start'>
-                            <IconButton onClick={async () => {updateChecklistHandler("add", checklistItem);}}>
-                                <AddCircleIcon color='info'/>
+                            <IconButton onClick={async () => {updateChecklistHandler("add", checklistItem);}} disabled={!checklistItem.length}>
+                                <AddCircleIcon color={!checklistItem.length ? 'disabled' : 'info'}/>
                             </IconButton>
                         </InputAdornment>
                     )
