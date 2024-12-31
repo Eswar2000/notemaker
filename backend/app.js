@@ -299,7 +299,7 @@ app.put('/note/:id', authenticateUser, (req, res) => {
 });
 
 
-//Route to add a simple note
+//Route to add a simple note, checklist or orderedlist
 app.post('/note', authenticateUser, (req, res) => {
     User.findOne({email: req.user.email}).then(async (user) => {
         if(user){
@@ -313,6 +313,10 @@ app.post('/note', authenticateUser, (req, res) => {
             if(req.body.type === 'default'){
                 newNote['subject'] = req.body.subject;
                 newNote['body'] = req.body.body;
+            }
+
+            if(req.body.type === 'ordered-list'){
+                newNote['orderedList'] = [];
             }
             
             Note.create(newNote).then(() => {
@@ -437,6 +441,107 @@ app.put('/checklist/:id', authenticateUser, (req, res) => {
                         });
                     });
                 });
+            }
+            
+        } else {
+            res.statusCode = 400;
+            res.json({
+                status: "No such user found"
+            });
+        }
+        
+    });
+});
+
+//Route to update a checklist by its ID
+app.put('/orderedlist/:id', authenticateUser, (req, res) => {
+    User.findOne({email: req.user.email}).then(async (user) => {
+        if(user){
+            let note_id = new mongoose.Types.ObjectId(req.params.id);
+            if(req.body.action==='general'){
+                Note.findByIdAndUpdate(note_id, {"title":req.body.title} , (err, note) => {
+                    if(err){
+                        res.statusCode = 500;
+                        res.json({
+                            status: "Error updating the ordered list",
+                        });
+                        return;
+                    } else if(note){
+                        res.statusCode = 200;
+                        res.json({
+                            status: "Ordered list updated",
+                        });
+                    } else {
+                        res.statusCode = 404;
+                        res.json({
+                            status: "Ordered list not found",
+                        });
+                    }
+                });
+            } else if(req.body.action==='erase'){
+                let attr = "orderedList."+req.body.index;
+                Note.findByIdAndUpdate(note_id, {$unset: {[attr]: 1}}).then(() => {
+                    Note.findByIdAndUpdate(note_id, {$pull: {"orderedList": null}}, (err, note) => {
+                        if(err){
+                            res.statusCode = 500;
+                            res.json({
+                                status: "Error erasing the ordered list element",
+                            });
+                            return;
+                        } else if(note){
+                            res.statusCode = 200;
+                            res.json({
+                                status: "Ordered list element erased",
+                            });
+                        } else {
+                            res.statusCode = 404;
+                            res.json({
+                                status: "Ordered list not found",
+                            });
+                        }
+                    });
+                });
+            } else if(req.body.action==='add') {
+                Note.findByIdAndUpdate(note_id, {$push: {"orderedList": req.body.element}}, (err, note) => {
+                    if(err){
+                        res.statusCode = 500;
+                        res.json({
+                            status: "Error adding the ordered list element",
+                        });
+                        return;
+                    } else if(note){
+                        res.statusCode = 200;
+                        res.json({
+                            status: "Ordered list item added",
+                        });
+                    } else {
+                        res.statusCode = 404;
+                        res.json({
+                            status: "Ordered list not found",
+                        });
+                    }
+                });
+            } else {
+                Note.findByIdAndUpdate(note_id, {"orderedList": req.body.orderedlist}, (err, note) => {
+                    if(err){
+                        res.statusCode = 500;
+                        res.json({
+                            status: "Error reordering the ordered list",
+                        });
+                        return;
+                    } else if(note){
+                        res.statusCode = 200;
+                        res.json({
+                            status: "Ordered list reordered",
+                        });
+                    } else {
+                        res.statusCode = 404;
+                        res.json({
+                            status: "Ordered list not found",
+                        });
+                    }
+                });
+
             }
             
         } else {

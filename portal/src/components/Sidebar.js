@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import NoteBanner from '../notes_banner.png';
+import NoteBanner from '../assets/notes-banner.png';
 import {Avatar, Button, TextField, Divider, Paper, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import { grey } from '@mui/material/colors';
 import {NoteAdd, Edit, PushPin} from '@mui/icons-material';
@@ -13,6 +13,8 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
     const [noteBody, setNoteBody] = useState("");
     const [checklistTitle, setChecklistTitle] = useState("");
     const [addChecklist, setAddChecklist] = useState(false);
+    const [orderedListTitle, setOrderedListTitle] = useState("");
+    const [addOrderedList, setAddOrderedList] = useState(false);
     
     const checklistHandler = async () => {
         let auth_token = sessionStorage.getItem('Auth_Token');
@@ -24,6 +26,23 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
         let response = await fetch(process.env.REACT_APP_API_URL + '/note', requestOptions);
         let responseBody = await response.json();
         setAddChecklist(false);
+        if(response.status === 200){
+            alertMessageHandler(responseBody.status);
+            alertHandler(true);
+            onModify();
+        }
+    }
+
+    const orderedListHandler = async () => {
+        let auth_token = sessionStorage.getItem('Auth_Token');
+        let requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
+            body: JSON.stringify({type:'ordered-list',title: orderedListTitle})
+        };
+        let response = await fetch(process.env.REACT_APP_API_URL + '/note', requestOptions);
+        let responseBody = await response.json();
+        setAddOrderedList(false);
         if(response.status === 200){
             alertMessageHandler(responseBody.status);
             alertHandler(true);
@@ -67,15 +86,15 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
                             <Edit fontSize='medium' />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary='Add checklist' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Stay on track with your to-dos!'/>
+                    <ListItemText primary='Add checklists' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Stay on track with your to-dos!'/>
                 </ListItem>
-                <ListItem className='list-item'>
+                <ListItem className='list-item' onClick={() => {setAddOrderedList(true);}}>
                     <ListItemAvatar>
                         <Avatar sx={{ bgcolor: grey[700] }}>
                             <PushPin fontSize='medium' />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary='Sort Notes' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Arrange notes in order'/>
+                    <ListItemText primary='Add Ordered Lists' primaryTypographyProps={{fontFamily: 'Audiowide'}} secondary='Prioritize your work items!'/>
                 </ListItem>
             </List>
             <Dialog open={addNote} onClose={() => {setAddNote(false);}}>
@@ -105,6 +124,20 @@ function Sidebar ({onModify, alertHandler, alertMessageHandler}) {
                 <DialogActions>
                     <Button onClick={() => {setAddChecklist(false);}}>Cancel</Button>
                     <Button onClick={async () => checklistHandler()}>Add</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={addOrderedList} onClose={() => {setAddOrderedList(false);}}>
+                <DialogTitle>Add an ordered list</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        To add an ordered list, fill in the title. Tasks can be added later.
+                    </DialogContentText>
+                    <TextField margin="dense" id="title" label="Ordered List Title" onChange={event => {setOrderedListTitle(event.target.value)}} fullWidth />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setAddOrderedList(false);}}>Cancel</Button>
+                    <Button onClick={async () => orderedListHandler()}>Add</Button>
                 </DialogActions>
             </Dialog>
         </Paper>

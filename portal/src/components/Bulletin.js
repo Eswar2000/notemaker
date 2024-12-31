@@ -3,7 +3,8 @@ import {Box, Grid, Typography} from '@mui/material';
 import Sidebar from './Sidebar';
 import SimpleNote from './SimpleNote';
 import Checklist from './Checklist';
-import NoDataBanner from '../no_data_banner.png';
+import OrderedList from './OrderedList';
+import NoDataBanner from '../assets/no-data-banner.png';
 
 
 
@@ -54,7 +55,7 @@ function Bulletin({alertHandler, alertMessageHandler}){
 
 
     return (
-        <Grid id={'dashboard-content'} container spacing={4}>
+        <Grid id='dashboard-content' container spacing={4}>
             {
                 (notes && notes.length > 0) && <Grid item xs={9}>
                     <Grid container spacing={2}>
@@ -71,6 +72,16 @@ function Bulletin({alertHandler, alertMessageHandler}){
                         {notes.map((note,index)=>{
                             if(note.type==='list'){
                                 return <Grid item xs={4} key={index}><Checklist note={note} shareableUsers={userList} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
+                            } else {
+                                return null;
+                            }
+                        })}
+                    </Grid>
+                    <Box height={24} />
+                    <Grid container spacing={2}>
+                        {notes.map((note,index)=>{
+                            if(note.type==='ordered-list'){
+                                return <Grid item xs={4} key={index}><OrderedList note={note} shareableUsers={userList} onModify={getNotes} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} /></Grid>
                             } else {
                                 return null;
                             }

@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import {blue} from '@mui/material/colors';
+import VideoBackground from '../assets/notemaker-register-bg.mp4';
 import Alert from '@mui/material/Alert';
 import {Link, useNavigate} from 'react-router-dom';
 import {Avatar, Box, Button, Container, TextField, Typography} from '@mui/material';
@@ -46,6 +47,8 @@ function Register() {
     
   return (
     <div className='screen'>
+        <div className='overlay' />
+        <video id='video-bg' src={VideoBackground} autoPlay muted loop />
         <Container className='form-card' maxWidth='xs'>
         <Avatar className='avatars' sx={{bgcolor: blue[700]}}>
             <FaceIcon fontSize='large' />

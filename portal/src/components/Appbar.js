@@ -18,7 +18,7 @@ function Appbar(){
 
     return (
         <Box>
-            <AppBar id="appbar" position="sticky">
+            <AppBar id="appbar">
                 <Toolbar>
                     <Typography id="brand-name">
                         NOTEMAKER

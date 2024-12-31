@@ -1,8 +1,22 @@
 .screen {
+	width: 100%;
 	height: 100vh;
-	width: 100vw;
-	background: linear-gradient(45deg, #f7fda6 11.2%, #80ffdd 57.8%, #ff80f9 85.9%);
-	animation: gradient 15s ease infinite;
+	overflow-y: hidden;
+}
+
+#video-bg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
 }
 
 @keyframes gradient {
@@ -24,6 +38,7 @@
   top: 50%;
   transform: translate(-50%, -50%); 
   background-color: white;
+  opacity: 0.9;
   border-radius: 16px;
   padding: 16px;
 }
@@ -36,6 +51,8 @@
 	width: 100%;
 	height: 100vh;
 	background-color: white;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
 #brand-name {
@@ -76,29 +93,43 @@
 	background-color: #f5f5f5;
 }
 
+/* Stylings for simple note */
+
 .simple-note-card {
+	display: flex;
+	flex-direction: column;
 	min-width: 300px;
-	min-height: 200px;
 	margin: auto;
+}
+
+.simple-note-card-content {
+	height: 200px;
+}
+
+.simple-note-card-body {
+	height: 120px;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
 #card-head {
 	font-weight: 700;
-	font-size: 26px;
+	font-size: 25px;
 	font-family: "Audiowide", sans-serif;
 	text-transform: capitalize;
 }
 
 #card-time {
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #card-sub {
 	font-weight: 500;
-	font-size: 20px;
+	font-size: 18px;
 	font-family: "Audiowide", sans-serif;
 	text-transform: capitalize;
+	margin-bottom: 4px;
 }
 
 .action-menu {
@@ -106,10 +137,21 @@
 	justify-content: space-between;
 }
 
+/* Styling for check-lists */
+
 .check-list-card {
 	min-width: 300px;
-	min-height: 350px;
 	margin: auto;
+}
+
+.check-list-card-content {
+	height: 225px;
+}
+
+.check-list-card-body {
+	height: 150px;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
 #checklist-row {
@@ -129,7 +171,7 @@
 }
 
 #dashboard-content {
-	padding: 16px;
+	padding: 96px 16px 40px;
 }
 
 #banner-text {
@@ -137,6 +179,8 @@
 	font-weight: 500;
 	font-family: "Audiowide", sans-serif;
 }
+
+/* Styling for no data screen */
 
 #no-data-banner {
 	width: 100%;
@@ -149,4 +193,30 @@
 	color: #FDB8F7;
 	text-align: center;
 	margin: 0 100px;
+}
+
+
+.ordered-list-card {
+	min-width: 300px;
+	margin: auto;
+}
+
+.ordered-list-card-content {
+	height: 225px;
+}
+
+.ordered-list-card-body {
+	height: 150px;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.ordered-list-item {
+	background-color: #f9f9f9;
+	margin: 5px;
+	border-radius: 16px;
+}
+
+.note-header {
+	margin: 4px;
 }

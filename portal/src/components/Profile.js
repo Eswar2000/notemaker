@@ -1,5 +1,5 @@
-import {Grid, Card, CardContent, Box, Typography, TextField} from '@mui/material';
-import ProfileBanner from '../profile_banner.png'
+import {Grid, Card, CardContent} from '@mui/material';
+import ProfileBanner from '../assets/profile-banner.png';
 
 
 

@@ -1,9 +1,9 @@
 import {useState} from 'react';
-import {Card, Button, TextField, Grid, Box, Divider, IconButton, CardContent, CardActions, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
-import AttachmentIcon from '@mui/icons-material/Attachment';
+import {Card, Button, Container, TextField, Box, Divider, IconButton, CardContent, CardActions, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SharedUserList from './SharedUserList';
+import OwnershipService from '../services/OwnershipService';
+import NoteHeader from './NoteHeader';
 
 function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageHandler}){
 
@@ -11,51 +11,12 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     const [noteTitle, setNoteTitle] = useState(note.title);
     const [noteSubject, setNoteSubject] = useState(note.subject);
     const [noteBody, setNoteBody] = useState(note.body);
-    const [noteSharedList, setNoteSharedList] = useState(note.shared);
-    const [shareNoteDialog, setShareNoteDialog] = useState(false);
-
-
-    const timeConvertor = () => {
-        let date_parsed = new Date(note.updatedAt);
-        let date_str = date_parsed.toString();
-        let date_arr = date_str.split(" ");
-        return date_arr[2]+" "+ date_arr[1]+", "+date_arr[3];
-    }
-
-    const getNoteOwnership = () => {
-        let email = sessionStorage.getItem('User_Email');
-        let owner = note.owner;
-        if(owner === email){
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     const deleteNoteHandler = async () => {
         let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`}
-        };
-        let response = await fetch(process.env.REACT_APP_API_URL + '/note/'+note._id, requestOptions);
-        let responseBody = await response.json();
-        if(response.status === 200){
-            onModify();
-            alertMessageHandler(responseBody.status);
-            alertHandler(true);
-        }
-    }
-
-    const shareNoteHandler = async () => {
-        let auth_token = sessionStorage.getItem('Auth_Token');
-        let share_body = {
-            'shared': noteSharedList
-        };
-        let requestOptions = {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth_token}`},
-            body: JSON.stringify(share_body)
         };
         let response = await fetch(process.env.REACT_APP_API_URL + '/note/'+note._id, requestOptions);
         let responseBody = await response.json();
@@ -102,31 +63,18 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
 
     return (
         <Card className='simple-note-card'>
-            <CardContent>
-                <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                        <Typography id='card-head'>
-                            {note.title}
-                        </Typography>
-                        <Typography id='card-time'>
-                            Updated On {timeConvertor()}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!getNoteOwnership()}>
-                            <AttachmentIcon color={getNoteOwnership() ? 'info' : 'disabled'}/>
-                        </IconButton>
-                    </Grid>
-                </Grid>
-                <Box height={8}/>
-                <Divider variant='inset'/>
-                <Box height={8}/>
-                <Typography id='card-sub'>
-                    {note.subject}
-                </Typography>
-                <Typography component='p' variant='body2'>
-                    {note.body}
-                </Typography>
+            <CardContent className='simple-note-card-content'>
+                <NoteHeader note={note} shareableUsers={shareableUsers} onModify={onModify} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} />
+                <Divider />
+                <Container disableGutters className='simple-note-card-body'>
+                    <Box height={8}/>
+                    <Typography id='card-sub'>
+                        {note.subject}
+                    </Typography>
+                    <Typography component='p' variant='body2'>
+                        {note.body}
+                    </Typography>
+                </Container>
             </CardContent>
             <CardActions className='action-menu'>
                 <IconButton onClick={() => {setEditNote(true);}}>
@@ -147,9 +95,8 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                         <Button onClick={async () => updateNoteHandler()}>Update</Button>
                     </DialogActions>
                 </Dialog>
-                <SharedUserList shared={noteSharedList} shareableUserPool={shareableUsers} shareNoteBool={shareNoteDialog} shareNoteBoolHandler={setShareNoteDialog} sharedUserHandler={setNoteSharedList} sharedNoteUpdateHandler={shareNoteHandler}/>
-                <IconButton onClick={() => {deleteNoteHandler()}} disabled={!getNoteOwnership()}>
-                    <DeleteIcon color={getNoteOwnership() ? 'error' : 'disabled'}/>
+                <IconButton onClick={() => {deleteNoteHandler()}} disabled={!OwnershipService.getNoteOwnership(note.owner)}>
+                    <DeleteIcon color={OwnershipService.getNoteOwnership(note.owner) ? 'error' : 'disabled'}/>
                 </IconButton>
             </CardActions>
         </Card>
