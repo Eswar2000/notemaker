@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import NoteBanner from '../notes_banner.png';
+import NoteBanner from '../assets/notes-banner.png';
 import {Avatar, Button, TextField, Divider, Paper, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import { grey } from '@mui/material/colors';
 import {NoteAdd, Edit, PushPin} from '@mui/icons-material';

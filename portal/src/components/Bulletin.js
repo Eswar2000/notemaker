@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import SimpleNote from './SimpleNote';
 import Checklist from './Checklist';
 import OrderedList from './OrderedList';
-import NoDataBanner from '../no_data_banner.png';
+import NoDataBanner from '../assets/no-data-banner.png';
 
 
 
