@@ -1,36 +1,61 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import PersonPinCircleRoundedIcon from '@mui/icons-material/PersonPinCircleRounded';
-import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { MeetingRoomRounded, PersonPinCircle, StickyNote2Rounded, ChecklistRounded, FormatListNumberedRounded } from '@mui/icons-material';
+import { Drawer, List, ListItem, ListItemText, ListItemButton, ListItemIcon, Divider, Toolbar, Typography, Box, AppBar } from '@mui/material';
 
-function Appbar(){
-    
+function Appbar({onScreenChange}) {
     const navigate = useNavigate();
+    
     const logout = () => {
         sessionStorage.clear();
         navigate('/signin');
     }
 
+    const privilegedActions = [{'name': 'Logout', 'icon': <MeetingRoomRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': logout}];
+    const nonPrivilegedActions = [{'name': 'Manage Notes', 'icon': <StickyNote2Rounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(0)}}, {'name': 'Manage Checklists', 'icon': <ChecklistRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(1)}}, {'name': 'Manage Ordered Lists', 'icon': <FormatListNumberedRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(2)}}, {'name': 'View Profile', 'icon': <PersonPinCircle sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(3)}}];
+
+    const DrawerList = (
+        <Box sx={{ width: '375px'}} role="presentation">
+            <List>
+                {nonPrivilegedActions.map((action) => (
+                    <ListItem key={action.name} disablePadding onClick={action.callback}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            {action.icon}
+                        </ListItemIcon>
+                        <ListItemText primary={action.name} />
+                    </ListItemButton>
+                </ListItem>
+                ))}
+            </List>
+            <Divider />
+            <List>
+                {privilegedActions.map((action) => (
+                    <ListItem key={action.name} disablePadding onClick={action.callback}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                {action.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={action.name} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
+
     return (
         <Box>
-            <AppBar id="appbar">
+            <AppBar id="appbar" sx={{bgcolor: 'white', boxShadow: 'none'}}>
                 <Toolbar>
                     <Typography id="brand-name">
-                        NOTEMAKER
+                        DASHBOARD
                     </Typography>
-                    <IconButton>
-                        <PersonPinCircleRoundedIcon className='app-icons' fontSize='large'/>
-                    </IconButton>
-                    <IconButton onClick={() => logout()}>
-                        <MeetingRoomRoundedIcon className='app-icons' fontSize='large'/>
-                    </IconButton>
                 </Toolbar>
             </AppBar>
+            <Drawer anchor='right' variant='permanent' PaperProps={{sx: {backgroundColor: '#8ECAE6'}}}>
+                {DrawerList}
+            </Drawer>
         </Box>
     );
 }

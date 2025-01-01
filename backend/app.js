@@ -175,7 +175,12 @@ app.get('/share-user', authenticateUser, (req, res) => {
 app.get('/all-notes', authenticateUser, (req, res) => {
     User.findOne({email: req.user.email}).then(async (user) => {
         if(user){
-            Note.find({$or: [{'owner': req.user.email}, {shared: {$in: [req.user.email]}}]}).then(async (notes) => {
+            const { type } = req.query;
+            const filter = {};
+            if(type) {
+                filter.type = type;
+            }
+            Note.find({$and: [{$or: [{'owner': req.user.email}, {shared: {$in: [req.user.email]}}]}, filter]}).then(async (notes) => {
                 if(notes.length !== 0){
                     res.statusCode = 200;
                     res.json({
