@@ -1,17 +1,15 @@
 import {ListItem, ListItemText, IconButton} from '@mui/material/';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import BackspaceIcon from '@mui/icons-material/Backspace';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {CheckBoxRounded, CheckBoxOutlineBlankRounded, HighlightOffRounded} from '@mui/icons-material';
 
 
-function MenuRow({element, checked, pos, toggle}){
+function Menu({element, checked, pos, toggle}){
 
   return (
-      <ListItem id='checklist-row'
+      <ListItem id='list-row'
           key={pos}
           secondaryAction={ checked && 
               <IconButton onClick={async () => {toggle("erase", pos);}}>
-                <BackspaceIcon color='error'/>
+                <HighlightOffRounded color='error'/>
               </IconButton>
             }
           >
@@ -22,7 +20,7 @@ function MenuRow({element, checked, pos, toggle}){
               toggle("check", pos);
             }
           }}>
-                  {checked ? <AddCircleIcon color='success'/> : <AddCircleOutlineIcon color='success'/>}
+                  {checked ? <CheckBoxRounded color='success'/> : <CheckBoxOutlineBlankRounded color='success'/>}
           </IconButton>
           <ListItemText primary={element} />
       </ListItem>
@@ -30,4 +28,4 @@ function MenuRow({element, checked, pos, toggle}){
 }
 
 
-export default MenuRow;
+export default Menu;

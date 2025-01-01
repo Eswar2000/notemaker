@@ -39,12 +39,12 @@ function NoteHeader({note, shareableUsers, onModify, alertHandler, alertMessageH
 
 
     return (
-        <Grid container spacing={3} className='note-header'>
+        <Grid container spacing={3}>
             <Grid item xs={10}>
-                <Typography id='card-head'>
+                <Typography id='note-card-heading'>
                     {note.title}
                 </Typography>
-                <Typography id='card-time'>
+                <Typography id='note-card-time'>
                     Updated On {timeConvertor(note.updatedAt)}
                 </Typography>
             </Grid>

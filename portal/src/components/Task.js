@@ -1,7 +1,7 @@
 import {ListItem, ListItemText, IconButton} from '@mui/material';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import {HighlightOff} from '@mui/icons-material';
 
 function Task({id, task, pos, deleteTask}) {
 
@@ -13,17 +13,16 @@ function Task({id, task, pos, deleteTask}) {
     
     return (
         <ListItem
-            className='ordered-list-item' 
+            id='list-row' 
             ref={setNodeRef} 
             {...attributes} 
             {...listeners} 
             style={style}
-            secondaryAction={
-            <IconButton edge="end" aria-label="delete" onClick={async () => {deleteTask("erase", pos);}} onPointerDown={(event) => {event.stopPropagation();}}>
-                <HighlightOffIcon color='error' />
-            </IconButton>
-            }>
+            >
             <ListItemText id={id} primary={task}/>
+            <IconButton aria-label="delete" onClick={async () => {deleteTask("erase", pos);}} onPointerDown={(event) => {event.stopPropagation();}}>
+                <HighlightOff color='error' />
+            </IconButton>
         </ListItem>
     );
 }

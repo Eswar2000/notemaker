@@ -62,13 +62,13 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     }
 
     return (
-        <Card className='simple-note-card'>
-            <CardContent className='simple-note-card-content'>
+        <Card id='note-card'>
+            <CardContent id='note-card-content'>
                 <NoteHeader note={note} shareableUsers={shareableUsers} onModify={onModify} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} />
                 <Divider />
-                <Container disableGutters className='simple-note-card-body'>
+                <Container disableGutters id='note-card-body'>
                     <Box height={8}/>
-                    <Typography id='card-sub'>
+                    <Typography id='note-card-subheading'>
                         {note.subject}
                     </Typography>
                     <Typography component='p' variant='body2'>
@@ -76,7 +76,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                     </Typography>
                 </Container>
             </CardContent>
-            <CardActions className='action-menu'>
+            <CardActions id='note-action-menu'>
                 <IconButton onClick={() => {setEditNote(true);}}>
                     <EditIcon color='success'/>
                 </IconButton>

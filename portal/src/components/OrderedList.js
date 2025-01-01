@@ -102,8 +102,8 @@ function OrderedList({note, shareableUsers, onModify, alertHandler, alertMessage
     }
 
     return (
-        <Card className='ordered-list-card'>
-            <CardContent className='ordered-list-card-content'>
+        <Card id='note-card'>
+            <CardContent id='note-card-content'>
                 <NoteHeader note={note} shareableUsers={shareableUsers} onModify={onModify} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} />
                 <TextField
                     label="Add Item"
@@ -121,7 +121,7 @@ function OrderedList({note, shareableUsers, onModify, alertHandler, alertMessage
                     onChange={event => {setOrderedListItem(event.target.value)}}
                     fullWidth
                 />
-                <Container disableGutters className='ordered-list-card-body'>
+                <Container disableGutters id='note-card-body'>
                     <DndContext collisionDetection={closestCorners} onDragEnd={(event) => {handleDragEnd(event)}}>
                         <List>
                             <SortableContext items={transformOrderedList(note.orderedList)} strategy={verticalListSortingStrategy}>
@@ -135,7 +135,7 @@ function OrderedList({note, shareableUsers, onModify, alertHandler, alertMessage
                     </DndContext>
                 </Container>
             </CardContent>
-            <CardActions className='action-menu'>
+            <CardActions id='note-action-menu'>
                 <IconButton onClick={() => {setTitleEdit(true);}}>
                     <EditIcon color='success'/>
                 </IconButton>

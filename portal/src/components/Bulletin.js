@@ -89,7 +89,7 @@ function Bulletin({ type, alertHandler, alertMessageHandler }) {
 
     return (
         <Box id='dashboard-content' >
-            <Button startIcon={<NoteAddRounded />} onClick={() => { setAddNote(true); }} sx={{ backgroundColor: '#FFB703', color: '#023047', borderRadius: '20px', fontFamily: '"Audiowide", sans-serif', fontWeight: 'bold', '&:hover': { backgroundColor: '#FB8500', transition: '0.25s ease-in' } }}>
+            <Button startIcon={<NoteAddRounded />} onClick={() => { setAddNote(true); }} sx={{backgroundColor: '#8ECAE6', color: '#023047', borderRadius: '16px', padding: '8px 16px', fontFamily: '"Audiowide", sans-serif', fontWeight: 'bold', '&:hover': {backgroundColor: '#8ECDE6', transition: '0.1s ease-in'}}}>
                 Create a note
             </Button>
             <Box height={24} />

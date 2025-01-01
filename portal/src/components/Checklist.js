@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import OwnershipService from '../services/OwnershipService';
-import MenuRow from './MenuRow';
+import Menu from './Menu';
 import NoteHeader from './NoteHeader';
 
 
@@ -76,8 +76,8 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
 
 
     return (
-        <Card className='check-list-card'>
-            <CardContent className='check-list-card-content'>
+        <Card id='note-card'>
+            <CardContent id='note-card-content'>
                 <NoteHeader note={note} shareableUsers={shareableUsers} onModify={onModify} alertHandler={alertHandler} alertMessageHandler={alertMessageHandler} />
                 <TextField
                     label="Add Item"
@@ -95,17 +95,17 @@ function Checklist ({note, shareableUsers, onModify, alertHandler, alertMessageH
                     onChange={event => {setChecklistItem(event.target.value)}}
                     fullWidth
                 />
-                <Container disableGutters className='check-list-card-body'>
+                <Container disableGutters id='note-card-body'>
                     {note.menu && note['menu'].map((element,index)=>{
-                        return <MenuRow element={element} key={index} pos={index} checked={false} toggle={updateChecklistHandler}/>
+                        return <Menu element={element} key={index} pos={index} checked={false} toggle={updateChecklistHandler}/>
                     })}
                     {note["menu"].length!==0 && note["menuChecked"].length!==0 && <Divider variant='middle' />}
                     {note.menuChecked && note['menuChecked'].map((element,index)=>{
-                        return <MenuRow element={element} key={index} pos={index} checked={true} toggle={updateChecklistHandler}/>
+                        return <Menu element={element} key={index} pos={index} checked={true} toggle={updateChecklistHandler}/>
                     })}
                 </Container>
             </CardContent>
-            <CardActions className='action-menu'>
+            <CardActions id='note-action-menu'>
                 <IconButton onClick={() => {setTitleEdit(true);}}>
                     <EditIcon color='success'/>
                 </IconButton>
