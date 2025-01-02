@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Grid, IconButton, Typography} from '@mui/material';
-import ShareIcon from '@mui/icons-material/Share';
+import {SendRounded} from '@mui/icons-material';
 import SharedUserList from './SharedUserList';
 import OwnershipService from '../services/OwnershipService';
 
@@ -10,6 +10,8 @@ import OwnershipService from '../services/OwnershipService';
 function NoteHeader({note, shareableUsers, onModify, alertHandler, alertMessageHandler}){
     const [noteSharedList, setNoteSharedList] = useState(note.shared);
     const [shareNoteDialog, setShareNoteDialog] = useState(false);
+    const shareStyle = {color: '#93C572'};
+    const disabledStyle = {color: '#F5D0A9'};
 
     const timeConvertor = (dateTime) => {
         let date_parsed = new Date(dateTime);
@@ -50,7 +52,7 @@ function NoteHeader({note, shareableUsers, onModify, alertHandler, alertMessageH
             </Grid>
             <Grid item xs={1}>
                 <IconButton onClick={() => {setShareNoteDialog(true);}} disabled={!OwnershipService.getNoteOwnership(note.owner)}>
-                    <ShareIcon color={OwnershipService.getNoteOwnership(note.owner) ? 'info' : 'disabled'}/>
+                    <SendRounded sx={OwnershipService.getNoteOwnership(note.owner) ? shareStyle : disabledStyle}/>
                 </IconButton>
             </Grid>
             <SharedUserList shared={noteSharedList} shareableUserPool={shareableUsers} shareNoteBool={shareNoteDialog} shareNoteBoolHandler={setShareNoteDialog} sharedUserHandler={setNoteSharedList} sharedNoteUpdateHandler={shareNoteHandler}/>

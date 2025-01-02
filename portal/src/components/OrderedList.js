@@ -27,6 +27,10 @@ function OrderedList({note, shareableUsers, onModify, alertHandler, alertMessage
     const [orderedListTitle, setOrderedListTitle] = useState(note.title);
     const [titleEdit, setTitleEdit] = useState(false);
 
+    const editStyle = {color: '#219EBC'};
+    const deleteStyle = {color: '#FB8500'};
+    const disabledStyle = {color: '#F5D0A9'};
+
     const getTaskPosition = (tasklist, id) => {
         return tasklist.findIndex((task) => task.id === id);
     }
@@ -137,10 +141,10 @@ function OrderedList({note, shareableUsers, onModify, alertHandler, alertMessage
             </CardContent>
             <CardActions id='note-action-menu'>
                 <IconButton onClick={() => {setTitleEdit(true);}}>
-                    <EditIcon color='success'/>
+                    <EditIcon sx={editStyle}/>
                 </IconButton>
                 <IconButton onClick={() => {deleteOrderedListHandler()}} disabled={!OwnershipService.getNoteOwnership(note.owner)}>
-                    <DeleteIcon color={OwnershipService.getNoteOwnership(note.owner) ? 'error' : 'disabled'}/>
+                    <DeleteIcon sx={OwnershipService.getNoteOwnership(note.owner) ? deleteStyle : disabledStyle}/>
                 </IconButton>
                 <Dialog open={titleEdit} onClose={() => {setTitleEdit(false);}}>
                     <DialogTitle>Edit Ordered List</DialogTitle>

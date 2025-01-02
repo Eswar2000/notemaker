@@ -12,6 +12,10 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
     const [noteSubject, setNoteSubject] = useState(note.subject);
     const [noteBody, setNoteBody] = useState(note.body);
 
+    const editStyle = {color: '#219EBC'};
+    const deleteStyle = {color: '#FB8500'};
+    const disabledStyle = {color: '#F5D0A9'};
+
     const deleteNoteHandler = async () => {
         let auth_token = sessionStorage.getItem('Auth_Token');
         let requestOptions = {
@@ -71,14 +75,14 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                     <Typography id='note-card-subheading'>
                         {note.subject}
                     </Typography>
-                    <Typography component='p' variant='body2'>
+                    <Typography component='p' variant='body2' id='note-card-message'>
                         {note.body}
                     </Typography>
                 </Container>
             </CardContent>
             <CardActions id='note-action-menu'>
                 <IconButton onClick={() => {setEditNote(true);}}>
-                    <EditIcon color='success'/>
+                    <EditIcon sx={editStyle}/>
                 </IconButton>
                 <Dialog open={editNote} onClose={() => {setEditNote(false);}}>
                     <DialogTitle>Edit Note</DialogTitle>
@@ -96,7 +100,7 @@ function SimpleNote({note, shareableUsers, onModify, alertHandler, alertMessageH
                     </DialogActions>
                 </Dialog>
                 <IconButton onClick={() => {deleteNoteHandler()}} disabled={!OwnershipService.getNoteOwnership(note.owner)}>
-                    <DeleteIcon color={OwnershipService.getNoteOwnership(note.owner) ? 'error' : 'disabled'}/>
+                    <DeleteIcon sx={OwnershipService.getNoteOwnership(note.owner) ? deleteStyle : disabledStyle}/>
                 </IconButton>
             </CardActions>
         </Card>

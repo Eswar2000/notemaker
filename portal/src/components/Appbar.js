@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MeetingRoomRounded, PersonPinCircle, StickyNote2Rounded, ChecklistRounded, FormatListNumberedRounded } from '@mui/icons-material';
 import { Drawer, List, ListItem, ListItemText, ListItemButton, ListItemIcon, Divider, Toolbar, Typography, Box, AppBar } from '@mui/material';
+import NotemakerLogo from '../assets/notemaker-logo.png';
 
 function Appbar({onScreenChange}) {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Appbar({onScreenChange}) {
 
     const DrawerList = (
         <Box sx={{ width: '375px'}} role="presentation">
+            <img src={NotemakerLogo} height={250} width={250} alt='notemaker-logo' id='brand-logo'/>
             <List>
                 {nonPrivilegedActions.map((action) => (
                     <ListItem key={action.name} disablePadding onClick={action.callback}>

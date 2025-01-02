@@ -9,7 +9,9 @@ function Task({id, task, pos, deleteTask}) {
     const style = {
         transition,
         transform: CSS.Transform.toString(transform),
-    }
+    };
+    const deleteStyle = {color: '#FB8500'};
+
     
     return (
         <ListItem
@@ -19,9 +21,9 @@ function Task({id, task, pos, deleteTask}) {
             {...listeners} 
             style={style}
             >
-            <ListItemText id={id} primary={task}/>
+            <ListItemText primary={task} id='note-card-message'/>
             <IconButton aria-label="delete" onClick={async () => {deleteTask("erase", pos);}} onPointerDown={(event) => {event.stopPropagation();}}>
-                <HighlightOff color='error' />
+                <HighlightOff sx={deleteStyle} />
             </IconButton>
         </ListItem>
     );

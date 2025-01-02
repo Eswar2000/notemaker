@@ -81,6 +81,13 @@
 	margin: 0 100px;
 }
 
+/* Styling Brand Logo */
+
+#brand-logo {
+	display: block;
+	margin: auto;
+}
+
 
 /* Standard Note Styling */
 
@@ -88,20 +95,27 @@
 	font-weight: 700;
 	font-size: 25px;
 	font-family: "Audiowide", sans-serif;
+	color: #023047;
 	text-transform: capitalize;
 }
 
 #note-card-time {
 	font-weight: 500;
 	font-size: 12px;
+	color: #023047;
 }
 
 #note-card-subheading {
 	font-weight: 500;
 	font-size: 18px;
 	font-family: "Audiowide", sans-serif;
+	color: #023047;
 	text-transform: capitalize;
 	margin-bottom: 4px;
+}
+
+#note-card-message {
+	color: #023047;
 }
 
 #note-action-menu {
