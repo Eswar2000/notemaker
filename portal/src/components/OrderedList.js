@@ -127,7 +127,7 @@ function OrderedList({note, shareableUsers, onModify, alertHandler, alertMessage
                 />
                 <Container disableGutters id='note-card-body'>
                     <DndContext collisionDetection={closestCorners} onDragEnd={(event) => {handleDragEnd(event)}}>
-                        <List>
+                        <List disablePadding>
                             <SortableContext items={transformOrderedList(note.orderedList)} strategy={verticalListSortingStrategy}>
                                 {
                                     transformOrderedList(note.orderedList).map((item) => (
