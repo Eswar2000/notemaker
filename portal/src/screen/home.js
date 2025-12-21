@@ -2,14 +2,13 @@ import {useState} from 'react';
 import {Box, Snackbar} from '@mui/material';
 import Appbar from '../components/Appbar';
 import Bulletin from '../components/Bulletin';
-import Profile from '../components/Profile';
 
 function Home() {
     const [subscreenIdx, setSubscreenIdx] = useState(0);
     const [alertMessage, setAlertMessage] = useState("");
     const [snack, setSnack] = useState(false);
 
-    const subscreens = [<Bulletin type='default' alertHandler={setSnack} alertMessageHandler={setAlertMessage} key='view-simple-note'/>, <Bulletin type='list' alertHandler={setSnack} alertMessageHandler={setAlertMessage} key='view-checklist'/>, <Bulletin type='ordered-list' alertHandler={setSnack} alertMessageHandler={setAlertMessage} key='view-ordered-list' />, <Profile key='profile'/>]
+    const subscreens = [<Bulletin type='default' alertHandler={setSnack} alertMessageHandler={setAlertMessage} key='view-simple-note'/>, <Bulletin type='list' alertHandler={setSnack} alertMessageHandler={setAlertMessage} key='view-checklist'/>, <Bulletin type='ordered-list' alertHandler={setSnack} alertMessageHandler={setAlertMessage} key='view-ordered-list' />];
 
     const onSnackClose = () => {
         setSnack(false);

@@ -13,7 +13,7 @@ function Appbar({onScreenChange}) {
     }
 
     const privilegedActions = [{'name': 'Logout', 'icon': <MeetingRoomRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': logout}];
-    const nonPrivilegedActions = [{'name': 'Manage Notes', 'icon': <StickyNote2Rounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(0)}}, {'name': 'Manage Checklists', 'icon': <ChecklistRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(1)}}, {'name': 'Manage Ordered Lists', 'icon': <FormatListNumberedRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(2)}}, {'name': 'View Profile', 'icon': <PersonPinCircle sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(3)}}];
+    const nonPrivilegedActions = [{'name': 'Manage Notes', 'icon': <StickyNote2Rounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(0)}}, {'name': 'Manage Checklists', 'icon': <ChecklistRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(1)}}, {'name': 'Manage Ordered Lists', 'icon': <FormatListNumberedRounded sx={{ color: '#023047', fontSize: '32px' }}/>, 'callback': () => {onScreenChange(2)}}];
 
     const DrawerList = (
         <Box sx={{ width: '375px'}} role="presentation">
